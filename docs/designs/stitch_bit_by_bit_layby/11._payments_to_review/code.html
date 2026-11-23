@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed": "#ffdea0", "on-error-container": "#93000a", "inverse-primary": "#95d4ac", "primary-container": "#0f5132", "on-error": "#ffffff", "error-container": "#ffdad6", "background": "#f5fbf6", "on-secondary-fixed": "#261a00", "on-tertiary-container": "#72c69a", "surface-variant": "#dee4df", "primary": "#003820", "on-surface": "#171d1a", "tertiary-container": "#005234", "inverse-on-surface": "#ecf2ed", "on-primary-fixed-variant": "#0f5132", "primary-fixed-dim": "#95d4ac", "primary-fixed": "#b0f1c7", "tertiary-fixed": "#9ff4c5", "tertiary": "#003923", "surface": "#f5fbf6", "surface-container-highest": "#dee4df", "on-tertiary": "#ffffff", "secondary-container": "#febf14", "tertiary-fixed-dim": "#83d8aa", "outline": "#707971", "surface-container-lowest": "#ffffff", "surface-dim": "#d5dbd6", "on-tertiary-fixed-variant": "#005234", "secondary-fixed-dim": "#fbbc0e", "on-surface-variant": "#404942", "outline-variant": "#c0c9c0", "secondary": "#795900", "on-primary-fixed": "#002111", "inverse-surface": "#2c322f", "on-background": "#171d1a", "surface-bright": "#f5fbf6", "surface-tint": "#2d6a48", "on-secondary-fixed-variant": "#5c4300", "surface-container-low": "#eff5f0", "on-primary": "#ffffff", "on-secondary-container": "#6d4f00", "error": "#ba1a1a", "surface-container": "#e9efea", "on-primary-container": "#84c39b", "on-secondary": "#ffffff", "surface-container-high": "#e4eae5", "on-tertiary-fixed": "#002112" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-tablet": "1.25rem", "space-md": "1rem", "space-2xl": "3rem", "space-xs": "0.25rem", "margin-desktop": "2.5rem", "margin-tablet": "1.5rem", "margin": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "space-xl": "2rem", "gutter": "1rem" }, fontFamily: { "body-md": ["Inter"], "headline-lg-mobile": ["Plus Jakarta Sans"], "currency-display-mobile": ["Inter"], "label-lg": ["Inter"], "currency-display": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "body-sm": ["Inter"], "label-md": ["Inter"], "body-lg": ["Inter"] }, fontSize: { "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], "headline-lg-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }], "currency-display-mobile": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-lg": ["15px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }], "currency-display": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }], "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "700" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "800" }], "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "600" }], "headline-xl-mobile": ["30px", { lineHeight: "38px", letterSpacing: "-0.01em", fontWeight: "800" }], "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "700" }], "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }], "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.02em", fontWeight: "600" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } };</script><style>body { min-height: max(884px, 100dvh); }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-fixed shadow-sm"><span class="material-symbols-outlined text-[20px]">store</span></div><div class="flex flex-col truncate"><span class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight truncate leading-tight">Khaya Hardware &amp; Spaza</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Bit by Bit Merchant</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-secondary-container rounded-full ring-2 ring-surface"></span></button><div class="flex items-center justify-center p-0.5 rounded-full ring-1 ring-outline-variant/40"><img alt="Owner Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3to8zeh5UKRrLWkVfuaXJTz2HJ5oli8t0lHH-yPsKVa-CCgU_f1-bZsZvkACfVoI15oWfcB3MuhJLEi6u7S3qm9mue7LeYgGVu8-QT0HDo28chLx-s25zTKrSD_TAsthMECfAjpLEkFgd1ZRwYAYzWbw2XWASLi1RAUTs4r5F154enaI7wrDd8mwDEqioS2rXQRXIu3dpevAhLyflZcRbqSfeviHZhmZRuIchQWT5"/></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 px-margin bg-surface"><div class="flex flex-col w-full pb-8">
+<!-- Title & Context Area -->
+<div class="flex flex-col gap-space-xs mb-space-md">
+<div class="flex items-center justify-between gap-space-sm flex-wrap">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight font-bold">Payments to Review</h1>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm shadow-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+        5 Slips Pending Verification
+      </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">
+      Verify customer deposit slips and bank transfers before updating lay-by milestone balances.
+    </p>
+</div>
+<!-- Filter Pills (High-contrast state indicators) -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-space-sm mb-space-md no-scrollbar">
+<button class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">hourglass_top</span>
+<span>Pending (5)</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Approved (38)</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-all flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span>Rejected (4)</span>
+</button>
+</div>
+<!-- Review Cards Stack -->
+<div class="flex flex-col gap-space-md">
+<!-- Card 1: Sipho Ndlovu (Capitec) -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_4px_16px_-2px_rgba(15,81,50,0.06),0_2px_6px_-1px_rgba(0,0,0,0.04)] flex flex-col gap-space-md transition-all duration-300" id="card-1">
+<!-- Card Top: Customer & Amount -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold flex-shrink-0">
+            SN
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Sipho Ndlovu</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 truncate">
+<span class="material-symbols-outlined text-[14px]">call</span>
+              +27 82 491 8821
+            </span>
+</div>
+</div>
+<div class="flex flex-col items-end flex-shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Claimed</span>
+<span class="font-currency-display-mobile text-currency-display-mobile text-primary font-bold">R 500,00</span>
+</div>
+</div>
+<!-- Item & Slip Details Box -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">kitchen</span> Lay-by Item
+          </span>
+<span class="font-semibold text-primary truncate max-w-[190px]">Defy 210L Chest Freezer</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">pin</span> Lay-by No.
+          </span>
+<span class="font-label-md text-label-md text-on-surface font-medium">#LB-84920</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">account_balance</span> Payment Method
+          </span>
+<span class="font-medium">Capitec EFT</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Received Date
+          </span>
+<span class="font-medium text-on-surface">Today, 24 Oct 10:45 AM</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tag</span> Bank Reference
+          </span>
+<span class="font-label-md text-label-md bg-surface-container px-2 py-0.5 rounded font-mono font-semibold text-primary">DEP-98234-KHA</span>
+</div>
+</div>
+<!-- Proof Snippet & Customer Note -->
+<div class="flex items-center gap-space-sm bg-surface-container-high/60 rounded-xl p-space-sm cursor-pointer hover:bg-surface-container-high transition-colors" onclick="openProofModal('Capitec Transfer Notification', 'Sipho Ndlovu', 'R 500,00', 'DEP-98234-KHA')">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close up photograph of a South African Capitec bank mobile app payment confirmation receipt on a smartphone screen showing green verified seal, reference DEP-98234-KHA, and total amount of 500 Rands clearly stamped in clean warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASdx_QH72aSLBFSpZGujF_fHm6NAiqeR8nqugFq-kBH4ebtpsop0zheH7ZfDB6ekzSt8z6nceq4nhl3PppDIc9H2_x7QXaERuw_L_BRKG0hlgKZL4WDu0xUfkx5jz1D5PFySVwMDgtxX6xmUT8TobPmwu4qQmnyX0TGKG_rCbS1kg7tMIaZs3vh6WUbNV7Gthk0zATxsAvExPYhqRIoBlu-nNmoX4MWZjID79a3ism"/>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-md text-label-md font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">description</span> Capitec_Slip_24Oct.pdf
+          </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic truncate mt-0.5">
+            “Paid via Capitec mobile app, reference used my cellphone number.”
+          </p>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">open_in_new</span>
+</div>
+<!-- Actions Stack -->
+<div class="flex items-center gap-space-xs pt-1">
+<button class="h-12 px-3.5 rounded-xl bg-surface-container text-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-surface-variant transition-colors flex-shrink-0" onclick="openProofModal('Capitec Transfer Notification', 'Sipho Ndlovu', 'R 500,00', 'DEP-98234-KHA')" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+<span>Proof</span>
+</button>
+<button class="h-12 px-3.5 rounded-xl bg-error-container text-on-error-container font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-red-200 transition-colors flex-shrink-0" onclick="openRejectModal('Sipho Ndlovu', '#LB-84920', 'card-1')" type="button">
+<span class="material-symbols-outlined text-[20px]">priority_high</span>
+<span>Reject</span>
+</button>
+<button class="h-12 flex-1 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-transform" onclick="confirmPayment('card-1', 'Sipho Ndlovu')" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>Confirm Payment</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Thabo Mthembu (FNB ATM) -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_4px_16px_-2px_rgba(15,81,50,0.06),0_2px_6px_-1px_rgba(0,0,0,0.04)] flex flex-col gap-space-md transition-all duration-300" id="card-2">
+<!-- Card Top: Customer & Amount -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold flex-shrink-0">
+            TM
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Thabo Mthembu</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 truncate">
+<span class="material-symbols-outlined text-[14px]">call</span>
+              +27 71 882 1092
+            </span>
+</div>
+</div>
+<div class="flex flex-col items-end flex-shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Claimed</span>
+<span class="font-currency-display-mobile text-currency-display-mobile text-primary font-bold">R 350,00</span>
+</div>
+</div>
+<!-- Item & Slip Details Box -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">construction</span> Lay-by Item
+          </span>
+<span class="font-semibold text-primary truncate max-w-[190px]">Bosch 600W Impact Drill</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">pin</span> Lay-by No.
+          </span>
+<span class="font-label-md text-label-md text-on-surface font-medium">#LB-77124</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">local_atm</span> Payment Method
+          </span>
+<span class="font-medium">FNB ATM Deposit</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Received Date
+          </span>
+<span class="font-medium text-on-surface">23 Oct 16:20 PM</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tag</span> ATM Reference
+          </span>
+<span class="font-label-md text-label-md bg-surface-container px-2 py-0.5 rounded font-mono font-semibold text-primary">FNB-ATM-9921</span>
+</div>
+</div>
+<!-- Proof Snippet -->
+<div class="flex items-center gap-space-sm bg-surface-container-high/60 rounded-xl p-space-sm cursor-pointer hover:bg-surface-container-high transition-colors" onclick="openProofModal('FNB ATM Cash Receipt', 'Thabo Mthembu', 'R 350,00', 'FNB-ATM-9921')">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A photo taken in natural daylight of a printed South African FNB thermal paper ATM deposit receipt resting flat on a wooden hardware store counter, displaying the 350 Rand cash deposit line item and printed terminal stamp clearly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpnpVTNWC6d8q0tHRh8MhBrAzpjeyte9Ii-VNFPOOidDLLf9G_8977MAXvmjs3o31F4UorgE_cKHr8Aqb8nWjgbzKLo2OPQ8hA5DAFWlhpq4zkS_pq4VfUvc9vB8svIqXpfemg6VHbU0PRSX2UPNGH2g8QmM19m83pGCfaFQGVafqgQtJ_qbc2aMdWY_6DTSq2bXjDt7G0dhCvE1bKXnLqqqjyWDhao6BXH6JHWf3M"/>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-md text-label-md font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span> ATM_Cash_Slip_Scan.jpg
+          </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mt-0.5">
+            Clear thermal print, ATM terminal #401 Pretoria West.
+          </p>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">open_in_new</span>
+</div>
+<!-- Actions Stack -->
+<div class="flex items-center gap-space-xs pt-1">
+<button class="h-12 px-3.5 rounded-xl bg-surface-container text-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-surface-variant transition-colors flex-shrink-0" onclick="openProofModal('FNB ATM Cash Receipt', 'Thabo Mthembu', 'R 350,00', 'FNB-ATM-9921')" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+<span>Proof</span>
+</button>
+<button class="h-12 px-3.5 rounded-xl bg-error-container text-on-error-container font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-red-200 transition-colors flex-shrink-0" onclick="openRejectModal('Thabo Mthembu', '#LB-77124', 'card-2')" type="button">
+<span class="material-symbols-outlined text-[20px]">priority_high</span>
+<span>Reject</span>
+</button>
+<button class="h-12 flex-1 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-transform" onclick="confirmPayment('card-2', 'Thabo Mthembu')" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>Confirm Payment</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Zanele Sithole (Standard Bank) -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_4px_16px_-2px_rgba(15,81,50,0.06),0_2px_6px_-1px_rgba(0,0,0,0.04)] flex flex-col gap-space-md transition-all duration-300" id="card-3">
+<!-- Card Top: Customer & Amount -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold flex-shrink-0">
+            ZS
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Zanele Sithole</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 truncate">
+<span class="material-symbols-outlined text-[14px]">call</span>
+              +27 84 553 1198
+            </span>
+</div>
+</div>
+<div class="flex flex-col items-end flex-shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Claimed</span>
+<span class="font-currency-display-mobile text-currency-display-mobile text-primary font-bold">R 1 200,00</span>
+</div>
+</div>
+<!-- Item & Slip Details Box -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">table_restaurant</span> Lay-by Item
+          </span>
+<span class="font-semibold text-primary truncate max-w-[190px]">4-Burner Gas Stove</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">pin</span> Lay-by No.
+          </span>
+<span class="font-label-md text-label-md text-on-surface font-medium">#LB-40192</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">credit_card</span> Payment Method
+          </span>
+<span class="font-medium">Standard Bank Instant EFT</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Received Date
+          </span>
+<span class="font-medium text-on-surface">23 Oct 14:10 PM</span>
+</div>
+<div class="flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tag</span> Bank Reference
+          </span>
+<span class="font-label-md text-label-md bg-surface-container px-2 py-0.5 rounded font-mono font-semibold text-primary">SB-EFT-4402</span>
+</div>
+</div>
+<!-- Proof Snippet -->
+<div class="flex items-center gap-space-sm bg-surface-container-high/60 rounded-xl p-space-sm cursor-pointer hover:bg-surface-container-high transition-colors" onclick="openProofModal('Standard Bank Proof of Payment', 'Zanele Sithole', 'R 1 200,00', 'SB-EFT-4402')">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Official digital PDF proof of payment voucher from Standard Bank South Africa on high-resolution paper mockup showing verified transaction status, R1 200 amount, and Khaya Hardware as registered beneficiary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7Dkla5UGAM0fQ4JWLz3-ZuQY97SssCBaQjJQ8Z6jkW19Ciek51zkqNXBMe2KbN_qHgR4C4HdjYDnUmc7dxsFZxDZIsci7aFItF8trs8s0_SNf14fex2oAo4pjZ7lCimU7bfHxiFS8TqjhuLyUVQVlZxAiM4Txjb9N4LdIP_-fGn-30yuwWwZc6Ip13Yse7GMIgopkaFSUiXeoHqsTCm3xNgWyS7NWQQjsT5Ylu6LN"/>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-md text-label-md font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span> StandardBank_POP_4402.pdf
+          </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mt-0.5">
+            Instant clearance notification received.
+          </p>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">open_in_new</span>
+</div>
+<!-- Actions Stack -->
+<div class="flex items-center gap-space-xs pt-1">
+<button class="h-12 px-3.5 rounded-xl bg-surface-container text-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-surface-variant transition-colors flex-shrink-0" onclick="openProofModal('Standard Bank Proof of Payment', 'Zanele Sithole', 'R 1 200,00', 'SB-EFT-4402')" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+<span>Proof</span>
+</button>
+<button class="h-12 px-3.5 rounded-xl bg-error-container text-on-error-container font-label-md text-label-md font-semibold flex items-center justify-center gap-1 hover:bg-red-200 transition-colors flex-shrink-0" onclick="openRejectModal('Zanele Sithole', '#LB-40192', 'card-3')" type="button">
+<span class="material-symbols-outlined text-[20px]">priority_high</span>
+<span>Reject</span>
+</button>
+<button class="h-12 flex-1 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-transform" onclick="confirmPayment('card-3', 'Zanele Sithole')" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>Confirm Payment</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Rejection Guidance Callout (Delight / Reassurance) -->
+<div class="mt-space-lg p-space-md rounded-2xl bg-surface-container-high/60 flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">forward_to_inbox</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-primary">Transparent Customer Updates</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+        When rejecting a slip, your customer receives an automated SMS and WhatsApp with your chosen reason (e.g. unreadable photo, reference mismatch) so they can instantly re-upload without panic.
+      </p>
+</div>
+</div>
+<!-- MODAL 1: View Proof Modal -->
+<div class="fixed inset-0 z-50 hidden bg-on-surface/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" id="proof-modal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-t-3xl sm:rounded-2xl p-space-md shadow-2xl flex flex-col gap-space-md max-h-[795px] overflow-y-auto">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">verified</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary" id="modal-proof-title">Deposit Slip Document</span>
+</div>
+<button class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-variant" onclick="closeProofModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Preview Mock Document Image -->
+<div class="w-full h-72 rounded-xl overflow-hidden bg-surface-container flex items-center justify-center relative shadow-inner">
+<img class="w-full h-full object-cover" data-alt="A clean, clear macro photo of a South African banking proof of payment letterhead showing official merchant account details, matching stamped payment reference, and customer verification watermark." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2bGy5UU0QWoONiq_CSxZtmkmsglgmH552SSlTrpd3fsFF_xlD3q72SK1ZC3tERGkWMgqIXIp7wk3UfIaPTGh6JnZIImFFjCD70y6IRomn710PfzQVCVz0Kojbv4dxRATI-UUzUGVSlbx6gA3vAqEF8dcNmCwNeqqzYfpPqRGC8-ijjY1bVnZkoU7_36LpW4XWmn7iCWETGrRTXZyYae61L2Jl-P88_KxYCwjj4zHA"/>
+<div class="absolute bottom-3 left-3 right-3 bg-surface-container-lowest/90 backdrop-blur-md p-2.5 rounded-lg flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold text-primary" id="modal-customer-name">Customer Name</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="modal-slip-ref">Ref: DEP-0000</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-extrabold text-primary" id="modal-slip-amount">R 000,00</span>
+</div>
+</div>
+<!-- Document Validation Checks -->
+<div class="flex flex-col gap-1.5 p-space-sm bg-surface-container-low rounded-xl font-body-sm text-body-sm">
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Beneficiary Name matches Khaya Hardware</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Bank branch code verified</span>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="flex items-center gap-space-xs pt-1">
+<button class="flex-1 h-12 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md font-semibold" onclick="closeProofModal()" type="button">
+          Close Preview
+        </button>
+<button class="flex-1 h-12 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1 shadow-md" onclick="confirmFromModal()" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Confirm &amp; Update</span>
+</button>
+</div>
+</div>
+</div>
+<!-- MODAL 2: Reject Reason Drawer -->
+<div class="fixed inset-0 z-50 hidden bg-on-surface/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" id="reject-modal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-t-3xl sm:rounded-2xl p-space-md shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-[24px]">flag</span>
+<span class="font-headline-sm text-headline-sm font-bold">Reject Deposit Slip</span>
+</div>
+<button class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-variant" onclick="closeRejectModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Select a clear reason. We'll automatically message <strong class="text-on-surface" id="reject-customer-label">Customer</strong> with direct instructions to resubmit.
+      </p>
+<!-- Reason Radio Selector -->
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="accent-primary w-4 h-4" name="reject-reason" type="radio" value="unreadable"/>
+<span class="font-body-sm text-body-sm text-on-surface">Blurry or unreadable deposit slip photo</span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="reject-reason" type="radio" value="amount"/>
+<span class="font-body-sm text-body-sm text-on-surface">Deposit amount differs from claimed amount</span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="reject-reason" type="radio" value="reference"/>
+<span class="font-body-sm text-body-sm text-on-surface">Missing or incorrect Lay-by reference</span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="reject-reason" type="radio" value="not-reflected"/>
+<span class="font-body-sm text-body-sm text-on-surface">Funds not reflected in store merchant account yet</span>
+</label>
+</div>
+<div class="flex items-center gap-space-xs pt-2">
+<button class="flex-1 h-12 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md font-semibold" onclick="closeRejectModal()" type="button">
+          Cancel
+        </button>
+<button class="flex-1 h-12 rounded-xl bg-error text-on-error font-label-md text-label-md font-bold shadow-md active:scale-98 transition-transform" onclick="submitRejection()" type="button">
+          Send Rejection SMS
+        </button>
+</div>
+</div>
+</div>
+<!-- Toast Notification Pill for feedback -->
+<div class="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-on-primary px-4 py-2.5 rounded-full shadow-lg font-label-md text-label-md flex items-center gap-2 opacity-0 pointer-events-none transition-all duration-300" id="toast">
+<span class="material-symbols-outlined text-[18px] text-secondary-container">task_alt</span>
+<span id="toast-message">Payment verified and balance updated!</span>
+</div>
+</div>
+<script>
+  let activeRejectCardId = null;
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    toastMsg.textContent = msg;
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+    setTimeout(() => {
+      toast.classList.remove('opacity-100');
+      toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 2800);
+  }
+
+  function confirmPayment(cardId, name) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    card.classList.add('scale-95', 'opacity-40');
+    setTimeout(() => {
+      card.remove();
+      showToast('Deposit approved for ' + name + '! Balance updated.');
+    }, 250);
+  }
+
+  function openProofModal(title, name, amount, ref) {
+    document.getElementById('modal-proof-title').textContent = title;
+    document.getElementById('modal-customer-name').textContent = name;
+    document.getElementById('modal-slip-amount').textContent = amount;
+    document.getElementById('modal-slip-ref').textContent = 'Ref: ' + ref;
+    document.getElementById('proof-modal').classList.remove('hidden');
+  }
+
+  function closeProofModal() {
+    document.getElementById('proof-modal').classList.add('hidden');
+  }
+
+  function confirmFromModal() {
+    closeProofModal();
+    showToast('Document verified and customer installment recorded!');
+  }
+
+  function openRejectModal(customerName, laybyId, cardId) {
+    activeRejectCardId = cardId;
+    document.getElementById('reject-customer-label').textContent = customerName + ' (' + laybyId + ')';
+    document.getElementById('reject-modal').classList.remove('hidden');
+  }
+
+  function closeRejectModal() {
+    document.getElementById('reject-modal').classList.add('hidden');
+    activeRejectCardId = null;
+  }
+
+  function submitRejection() {
+    if (activeRejectCardId) {
+      const card = document.getElementById(activeRejectCardId);
+      if (card) {
+        card.classList.add('scale-95', 'opacity-30');
+        setTimeout(() => card.remove(), 250);
+      }
+    }
+    closeRejectModal();
+    showToast('Customer notified via WhatsApp with resubmission steps.');
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(15,81,50,0.06)]" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-16 px-space-xs max-w-lg mx-auto"><a class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-on-surface transition-all" data-path="owner-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">dashboard</span><span class="font-label-sm text-label-sm tracking-tight">Dashboard</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-on-surface transition-all" data-path="all-lay-bys" href="#"><span class="material-symbols-outlined text-[24px]">inventory_2</span><span class="font-label-sm text-label-sm tracking-tight">Lay-bys</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-1 w-16 h-12 transition-all relative text-primary font-semibold" data-path="payments-to-review" href="#"><span class="material-symbols-outlined text-[24px]">fact_check</span><span class="font-label-sm text-label-sm tracking-tight">Review</span></a><a class="flex flex-col items-center justify-center gap-1 w-16 h-12 text-on-surface-variant hover:text-on-surface transition-all" data-path="merchant-profile" href="#"><span class="material-symbols-outlined text-[24px]">storefront</span><span class="font-label-sm text-label-sm tracking-tight">More</span></a></div></nav></body></html>
