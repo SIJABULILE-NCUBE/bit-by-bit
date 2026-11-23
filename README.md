@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | 🌐 Live app | _coming soon_ |
-| 🎨 Stitch designs | _add Stitch link here_ |
+| 🎨 Stitch designs | _https://stitch.google.com/projects/10601282457004177971_ |
 | 🎥 Loom demo | _coming soon_ |
 
 ### Test logins
