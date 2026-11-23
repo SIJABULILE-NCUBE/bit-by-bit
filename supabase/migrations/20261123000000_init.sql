@@ -1,7 +1,7 @@
 -- =========================================================
 -- Bit by Bit: first migration
 -- tables, a sign-up trigger, row level security and file storage
--- I run this once in the Supabase SQL editor
+-- I push this with the Supabase CLI: npx supabase db push
 -- =========================================================
 
 
@@ -87,7 +87,11 @@ security definer
 set search_path = ''
 as $$
 declare
-  new_role text := coalesce(new.raw_user_meta_data ->> 'role', 'customer');
+  -- anything that isn't 'owner' becomes 'customer', so a bad value can't break sign-up
+  new_role text := case
+    when new.raw_user_meta_data ->> 'role' = 'owner' then 'owner'
+    else 'customer'
+  end;
 begin
   insert into public.profiles (id, email, full_name, phone, role)
   values (
@@ -118,6 +122,7 @@ create trigger on_auth_user_created
 
 -- ---------- 3. HELPER FUNCTIONS FOR PERMISSIONS ----------
 -- I use "security definer" helpers so the policies don't loop into each other
+-- (I write (select auth.uid()) so Postgres works it out once per query, not once per row)
 
 -- is the logged-in user the owner of this shop?
 create or replace function public.owns_shop(shop uuid)
@@ -126,7 +131,7 @@ language sql stable security definer set search_path = ''
 as $$
   select exists (
     select 1 from public.shops s
-    where s.id = shop and s.owner_id = auth.uid()
+    where s.id = shop and s.owner_id = (select auth.uid())
   );
 $$;
 
@@ -139,7 +144,7 @@ as $$
     select 1 from public.laybys l
     join public.shops s on s.id = l.shop_id
     where l.id = lay
-      and (l.customer_id = auth.uid() or s.owner_id = auth.uid())
+      and (l.customer_id = (select auth.uid()) or s.owner_id = (select auth.uid()))
   );
 $$;
 
@@ -150,7 +155,7 @@ language sql stable security definer set search_path = ''
 as $$
   select exists (
     select 1 from public.laybys l
-    where l.shop_id = shop and l.customer_id = auth.uid()
+    where l.shop_id = shop and l.customer_id = (select auth.uid())
   );
 $$;
 
@@ -161,8 +166,22 @@ language sql stable security definer set search_path = ''
 as $$
   select exists (
     select 1 from public.laybys l
-    where l.id = lay and l.customer_id = auth.uid()
+    where l.id = lay and l.customer_id = (select auth.uid())
   );
+$$;
+
+
+-- turns a storage path like '<layby_id>/proof.jpg' into the lay-by id
+-- I return null (instead of crashing) when the folder isn't a valid uuid
+create or replace function public.folder_layby_id(object_name text)
+returns uuid
+language sql stable set search_path = ''
+as $$
+  select case
+    when (storage.foldername(object_name))[1]
+         ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+    then ((storage.foldername(object_name))[1])::uuid
+  end;
 $$;
 
 
@@ -179,11 +198,11 @@ alter table public.payments    enable row level security;
 
 -- profiles: I can see and edit my own profile
 create policy "read own profile" on public.profiles
-  for select using (id = auth.uid());
+  for select using (id = (select auth.uid()));
 
 create policy "update own profile" on public.profiles
-  for update using (id = auth.uid())
-  with check (id = auth.uid());
+  for update using (id = (select auth.uid()))
+  with check (id = (select auth.uid()));
 
 -- but users may only change their name and phone, never their role or email
 revoke update on public.profiles from authenticated, anon;
@@ -200,17 +219,18 @@ create policy "owner reads own customers" on public.profiles
 
 -- shops: owners manage their own shop, customers can see shops they have a lay-by with
 create policy "owner reads own shop" on public.shops
-  for select using (owner_id = auth.uid());
+  for select using (owner_id = (select auth.uid()));
 
 create policy "owner updates own shop" on public.shops
-  for update using (owner_id = auth.uid());
+  for update using (owner_id = (select auth.uid()))
+  with check (owner_id = (select auth.uid()));
 
 create policy "customer reads their shops" on public.shops
   for select using (public.has_layby_at_shop(id));
 
 -- laybys: customers see their own, owners see and manage their shop's
 create policy "customer reads own laybys" on public.laybys
-  for select using (customer_id = auth.uid());
+  for select using (customer_id = (select auth.uid()));
 
 create policy "owner reads shop laybys" on public.laybys
   for select using (public.owns_shop(shop_id));
@@ -219,7 +239,12 @@ create policy "owner creates shop laybys" on public.laybys
   for insert with check (public.owns_shop(shop_id));
 
 create policy "owner updates shop laybys" on public.laybys
-  for update using (public.owns_shop(shop_id));
+  for update using (public.owns_shop(shop_id))
+  with check (public.owns_shop(shop_id));
+
+-- owners can only change these lay-by columns (not the price, deposit or customer)
+revoke update on public.laybys from authenticated, anon;
+grant update (item_name, item_photo_path, status, cancel_reason) on public.laybys to authenticated;
 
 -- instalments: anyone who can see the lay-by can see its schedule
 -- (only the server creates instalments)
@@ -236,20 +261,28 @@ create policy "customer adds pending eft" on public.payments
     public.is_layby_customer(layby_id)
     and method = 'eft'
     and status = 'pending'
-    and created_by = auth.uid()
+    and created_by = (select auth.uid())
   );
 
 -- owners can record cash and confirm/reject payments at their shop
 create policy "owner adds payments" on public.payments
   for insert with check (
     exists (select 1 from public.laybys l where l.id = layby_id and public.owns_shop(l.shop_id))
-    and created_by = auth.uid()
+    and method in ('cash', 'deposit')
+    and created_by = (select auth.uid())
   );
 
 create policy "owner reviews payments" on public.payments
   for update using (
     exists (select 1 from public.laybys l where l.id = layby_id and public.owns_shop(l.shop_id))
+  )
+  with check (
+    exists (select 1 from public.laybys l where l.id = layby_id and public.owns_shop(l.shop_id))
   );
+
+-- reviewing a payment only touches these columns (never the amount or method)
+revoke update on public.payments from authenticated, anon;
+grant update (status, reject_reason, reviewed_at) on public.payments to authenticated;
 
 
 -- ---------- 5. FILE STORAGE FOR PROOF OF PAYMENT ----------
@@ -263,12 +296,12 @@ on conflict (id) do nothing;
 create policy "customer uploads own proof" on storage.objects
   for insert with check (
     bucket_id = 'proofs'
-    and public.is_layby_customer(((storage.foldername(name))[1])::uuid)
+    and public.is_layby_customer(public.folder_layby_id(name))
   );
 
 -- the customer and the shop owner can view the proof
 create policy "read proofs of visible laybys" on storage.objects
   for select using (
     bucket_id = 'proofs'
-    and public.can_see_layby(((storage.foldername(name))[1])::uuid)
+    and public.can_see_layby(public.folder_layby_id(name))
   );
