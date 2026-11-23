@@ -6,3 +6,11 @@ build/
 coverage/
 *.log
 .vercel
+
+# I keep every real env file out of git, but share the examples
+.env.*
+!.env.example
+
+# Supabase CLI local files (holds my linked project info)
+supabase/.temp/
+supabase/.branches/
