@@ -14,8 +14,10 @@
 ### Test logins
 | Role | Email | Password |
 |---|---|---|
-| Customer | customer@bit-by-bit.test | _coming soon_ |
-| Shop owner | owner@bit-by-bit.test | _coming soon_ |
+| Shop owner (Kasi Kids Wear) | owner@bit-by-bit.test | BitByBit2026! |
+| Customer (Thandi Mokoena) | customer@bit-by-bit.test | BitByBit2026! |
+
+They come with 3 demo lay-bys: one on track (with a slip waiting for review), one overdue and one paid up, ready to collect.
 
 ---
 
@@ -68,6 +70,7 @@ cd bit-by-bit
 cd server
 cp .env.example .env   # add your Supabase URL and keys
 npm install
+npm run seed   # optional: test logins + 3 demo lay-bys (safe to run again)
 npm run dev
 
 # frontend (new terminal)
