@@ -58,6 +58,19 @@ describe('Customer "My lay-bys"', () => {
     expect(await screen.findByText('Overdue')).toBeInTheDocument()
   })
 
+  it('puts everything that is overdue in the summary, not just the first missed instalment', async () => {
+    vi.mocked(api.listLaybys).mockResolvedValue([
+      makeLayby({ overdue: true, nextDue: { dueDate: '2026-10-09', amount: 270 }, overdueDue: { amount: 540, since: '2026-10-09' } }),
+      makeLayby({ id: 'b', overdue: true, nextDue: { dueDate: '2026-11-01', amount: 100 }, overdueDue: { amount: 100, since: '2026-11-01' } }),
+      makeLayby({ id: 'c' }),
+    ])
+    renderApp('/customer', asCustomer())
+
+    const summary = await screen.findByRole('region', { name: /my progress/i })
+    expect(summary).toHaveTextContent(/overdue now\s*r 640,00/i)
+    expect(summary).not.toHaveTextContent(/next payment/i)
+  })
+
   it('explains what happens when I have no lay-bys', async () => {
     vi.mocked(api.listLaybys).mockResolvedValue([])
     renderApp('/customer', asCustomer())

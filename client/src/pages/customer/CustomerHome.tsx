@@ -78,6 +78,8 @@ function MyProgress({ laybys }: { laybys: LaybySummary[] }) {
   const totalPaid = laybys.reduce((sum, l) => sum + toCents(l.paid), 0) / 100
   const active = laybys.filter((l) => l.status === 'active').length
   const next = soonestDue(laybys)
+  // if anything is late, that's what matters most, so I add up everything that's overdue
+  const overdueCents = laybys.reduce((sum, l) => sum + toCents(l.overdueDue?.amount ?? 0), 0)
 
   return (
     <section aria-label="My progress" className="rounded-2xl bg-brand p-5 text-white">
@@ -88,12 +90,19 @@ function MyProgress({ laybys }: { laybys: LaybySummary[] }) {
           <span className="block text-brand-light">Lay-bys</span>
           <span className="font-bold">{active} active</span>
         </p>
-        <p>
-          <span className="block text-gold">Next payment</span>
-          <span className="font-bold">
-            {next ? `${formatMoney(next.amount)} (${formatDate(next.dueDate)})` : 'Nothing due'}
-          </span>
-        </p>
+        {overdueCents > 0 ? (
+          <p>
+            <span className="block text-gold">Overdue now</span>
+            <span className="font-bold">{formatMoney(overdueCents / 100)}</span>
+          </p>
+        ) : (
+          <p>
+            <span className="block text-gold">Next payment</span>
+            <span className="font-bold">
+              {next ? `${formatMoney(next.amount)} (${formatDate(next.dueDate)})` : 'Nothing due'}
+            </span>
+          </p>
+        )}
       </div>
     </section>
   )
