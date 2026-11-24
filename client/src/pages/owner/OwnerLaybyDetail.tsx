@@ -8,7 +8,7 @@ import StatusBadge from '../../components/StatusBadge'
 import TextField from '../../components/TextField'
 import { useAuth } from '../../context/AuthContext'
 import { useLayby } from '../../hooks/useLayby'
-import { ApiError, addPayment } from '../../lib/api'
+import { ApiError, addPayment, updateLaybyStatus } from '../../lib/api'
 import { formatMoney, parseMoney } from '../../lib/money'
 import { openProof } from '../../lib/openProof'
 import { checkPaymentAmount } from '../../lib/paymentRules'
@@ -64,6 +64,112 @@ function RecordCash({ layby, onRecorded }: { layby: LaybyDetail; onRecorded: (me
         {saving ? 'Saving…' : 'Record cash payment'}
       </button>
     </form>
+  )
+}
+
+// "Mark as collected" (only once it's paid up) and "Cancel lay-by" (always with a reason)
+function StatusControls({ layby, onChanged }: { layby: LaybyDetail; onChanged: (message: string) => void }) {
+  const { session } = useAuth()
+  const [cancelling, setCancelling] = useState(false)
+  const [reason, setReason] = useState('')
+  const [reasonError, setReasonError] = useState<string>()
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function change(action: 'collect' | 'cancel') {
+    setError(null)
+    setBusy(true)
+    try {
+      await updateLaybyStatus(
+        session!.access_token,
+        layby.id,
+        action === 'collect' ? { action } : { action, reason: reason.trim() },
+      )
+      onChanged(action === 'collect' ? 'Marked as collected. Enjoy the sale!' : 'Lay-by cancelled.')
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Something went wrong, please try again.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function submitCancel(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!reason.trim()) {
+      setReasonError('Give a reason, so you both have a record of why')
+      return
+    }
+    void change('cancel')
+  }
+
+  return (
+    <div className="space-y-3">
+      {error && (
+        <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">
+          {error}
+        </p>
+      )}
+
+      {layby.status === 'completed' && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void change('collect')}
+          className="w-full rounded-xl bg-gold px-6 py-3 font-semibold text-brand-dark hover:brightness-95 disabled:opacity-60"
+        >
+          Mark as collected
+        </button>
+      )}
+
+      {cancelling ? (
+        <form onSubmit={submitCancel} noValidate className="space-y-3 rounded-xl bg-red-50 p-4">
+          <label htmlFor="cancel-reason" className="block font-semibold text-red-900">
+            Reason for cancelling
+          </label>
+          <textarea
+            id="cancel-reason"
+            rows={2}
+            maxLength={300}
+            placeholder="e.g. The customer asked to cancel"
+            value={reason}
+            onChange={(e) => {
+              setReason(e.target.value)
+              setReasonError(undefined)
+            }}
+            className="w-full rounded-xl border border-red-200 bg-white p-3 outline-none focus:ring-2 focus:ring-red-700"
+          />
+          {reasonError && (
+            <p role="alert" className="text-sm font-medium text-red-700">
+              {reasonError}
+            </p>
+          )}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setCancelling(false)}
+              className="rounded-xl bg-white px-4 py-3 font-semibold text-gray-700"
+            >
+              Keep it
+            </button>
+            <button
+              type="submit"
+              disabled={busy}
+              className="rounded-xl bg-red-700 px-4 py-3 font-semibold text-white hover:bg-red-800 disabled:opacity-60"
+            >
+              Yes, cancel it
+            </button>
+          </div>
+        </form>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCancelling(true)}
+          className="w-full rounded-xl bg-gray-100 px-6 py-3 font-semibold text-red-800 hover:bg-red-50"
+        >
+          Cancel lay-by
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -148,10 +254,12 @@ function OwnerLaybyDetail() {
           </section>
 
           {/* what the owner can do at the counter */}
-          {canTakePayments && (
+          {/* collected and cancelled lay-bys are finished, so there's nothing to change */}
+          {(layby.status === 'active' || layby.status === 'completed') && (
             <section aria-label="Shop controls" className="space-y-4 rounded-2xl bg-white p-5 shadow-sm">
               <h2 className="text-lg font-bold">Shop controls</h2>
-              <RecordCash layby={layby} onRecorded={changed} />
+              {canTakePayments && <RecordCash layby={layby} onRecorded={changed} />}
+              <StatusControls layby={layby} onChanged={changed} />
             </section>
           )}
 

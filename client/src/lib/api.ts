@@ -1,4 +1,4 @@
-import type { LaybyDetail, LaybySummary, NewLaybyInput, PaymentResult, PendingPayment, Profile } from '../types'
+import type { Dashboard, LaybyDetail, LaybySummary, NewLaybyInput, PaymentResult, PendingPayment, Profile } from '../types'
 
 // where my Express server lives (set in client/.env)
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
@@ -91,4 +91,18 @@ export function reviewPayment(
     method: 'PATCH',
     body: review,
   })
+}
+
+// shop owners only: the dashboard totals
+export function getDashboard(token: string): Promise<Dashboard> {
+  return apiRequest<Dashboard>('/api/dashboard', token)
+}
+
+// shop owners only: hand over a paid-up item, or cancel with a reason
+export function updateLaybyStatus(
+  token: string,
+  laybyId: string,
+  change: { action: 'collect' } | { action: 'cancel'; reason: string },
+): Promise<LaybySummary> {
+  return apiRequest<LaybySummary>(`/api/laybys/${encodeURIComponent(laybyId)}`, token, { method: 'PATCH', body: change })
 }

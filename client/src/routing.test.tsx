@@ -8,6 +8,8 @@ import { renderApp, fakeAuth, fakeSession, customer, owner } from './test/render
 vi.mock(import('./lib/api'), async (importOriginal) => ({
   ...(await importOriginal()),
   listLaybys: vi.fn(),
+  // the owner home loads the dashboard; I leave it loading forever, these tests only check routing
+  getDashboard: vi.fn(() => new Promise<never>(() => {})),
 }))
 
 beforeEach(() => {

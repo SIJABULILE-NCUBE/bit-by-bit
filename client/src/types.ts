@@ -77,3 +77,17 @@ export type PendingPayment = PaymentItem & {
   layby: { id: string; itemName: string; price: number; balance: number; status: LaybyStatus }
   customer: { id: string; fullName: string | null; email: string; phone: string | null }
 }
+
+// what GET /api/dashboard sends back (all worked out from the real database)
+export type Dashboard = {
+  shop: { id: string; name: string; area: string | null } | null
+  totals: {
+    active: number
+    overdue: number
+    readyToCollect: number
+    paymentsToReview: number
+    totalOutstanding: number
+  }
+  overdueLaybys: LaybySummary[]
+  readyLaybys: LaybySummary[]
+}
