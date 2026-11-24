@@ -1,3 +1,5 @@
+import type { NewPayment, PaymentRef } from '../src/repositories/paymentRepo.js'
+import type { LaybyStatus } from '../src/services/laybyMath.js'
 import type {
   LaybyFilter,
   LaybyRecord,
@@ -11,10 +13,12 @@ import type {
 
 type FakeShop = ShopRecord & { ownerId: string }
 
-export const db: { shops: FakeShop[]; profiles: ProfileRecord[]; laybys: LaybyRecord[] } = {
+// proofFiles = the paths of files "uploaded" to the proofs bucket
+export const db: { shops: FakeShop[]; profiles: ProfileRecord[]; laybys: LaybyRecord[]; proofFiles: string[] } = {
   shops: [],
   profiles: [],
   laybys: [],
+  proofFiles: [],
 }
 
 let nextId = 1
@@ -33,6 +37,7 @@ export function resetFakeDb() {
     { id: 'user-owner-2', email: 'lerato@example.com', fullName: 'Lerato Khumalo', phone: '0841234567', role: 'owner' },
   ]
   db.laybys = []
+  db.proofFiles = []
 }
 
 function shopDetails(shopId: string) {
@@ -84,6 +89,7 @@ export const fakeLaybyRepo = {
           createdAt: '2026-11-24T08:00:00Z',
           reviewedAt: '2026-11-24T08:00:00Z',
           rejectReason: null,
+          proofPath: null,
         },
       ],
     })
@@ -98,6 +104,67 @@ export const fakeLaybyRepo = {
 
   async getLayby(id: string): Promise<LaybyRecord | null> {
     return db.laybys.find((l) => l.id === id) ?? null
+  },
+
+  async setLaybyStatus(id: string, status: LaybyStatus, cancelReason: string | null = null): Promise<void> {
+    const layby = db.laybys.find((l) => l.id === id)
+    if (!layby) throw new Error(`fake db: no layby ${id}`)
+    layby.status = status
+    layby.cancelReason = cancelReason
+  },
+}
+
+// finds a payment anywhere in the fake db, with the lay-by it belongs to
+export function findFakePayment(id: string) {
+  for (const layby of db.laybys) {
+    const payment = layby.payments.find((p) => p.id === id)
+    if (payment) return { layby, payment }
+  }
+  return null
+}
+
+export const fakePaymentRepo = {
+  async addPayment(input: NewPayment): Promise<string> {
+    const layby = db.laybys.find((l) => l.id === input.laybyId)
+    if (!layby) throw new Error(`fake db: no layby ${input.laybyId}`)
+    const id = `payment-${nextId++}`
+    layby.payments.push({
+      id,
+      amount: input.amount,
+      method: input.method,
+      status: input.status,
+      createdBy: input.createdBy,
+      createdAt: '2026-11-24T09:00:00Z',
+      reviewedAt: input.status === 'confirmed' ? '2026-11-24T09:00:00Z' : null,
+      rejectReason: null,
+      proofPath: input.proofPath,
+    })
+    return id
+  },
+
+  async findPayment(id: string): Promise<PaymentRef | null> {
+    const found = findFakePayment(id)
+    return found ? { id, laybyId: found.layby.id } : null
+  },
+
+  async reviewPayment(
+    id: string,
+    review: { status: 'confirmed' | 'rejected'; rejectReason: string | null },
+  ): Promise<boolean> {
+    const found = findFakePayment(id)
+    if (!found || found.payment.status !== 'pending') return false
+    found.payment.status = review.status
+    found.payment.rejectReason = review.rejectReason
+    found.payment.reviewedAt = '2026-11-24T10:00:00Z'
+    return true
+  },
+
+  async proofExists(path: string): Promise<boolean> {
+    return db.proofFiles.includes(path)
+  },
+
+  async signedProofUrl(path: string): Promise<string> {
+    return `https://storage.test/signed/${path}?token=abc`
   },
 }
 

@@ -24,6 +24,8 @@ export type PaymentRecord = {
   createdAt: string
   reviewedAt: string | null
   rejectReason: string | null
+  // where the proof of payment file is in storage (EFT only)
+  proofPath: string | null
 }
 
 // a lay-by with everything I need to show it: shop, customer, schedule and payments
@@ -69,7 +71,7 @@ const laybySelect = `
   shop:shops!laybys_shop_id_fkey ( id, name, area ),
   customer:profiles!laybys_customer_id_fkey ( id, full_name, email, phone ),
   instalments ( seq, due_date, amount ),
-  payments ( id, amount, method, status, created_by, created_at, reviewed_at, reject_reason )
+  payments ( id, amount, method, status, created_by, created_at, reviewed_at, reject_reason, proof_path )
 `
 
 // the shape Supabase sends back (snake_case, and numeric columns can come back as strings)
@@ -97,6 +99,7 @@ type LaybyRow = {
     created_at: string
     reviewed_at: string | null
     reject_reason: string | null
+    proof_path: string | null
   }[]
 }
 
@@ -134,6 +137,7 @@ function toRecord(row: LaybyRow): LaybyRecord {
         createdAt: p.created_at,
         reviewedAt: p.reviewed_at,
         rejectReason: p.reject_reason,
+        proofPath: p.proof_path,
       }))
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
   }
@@ -233,4 +237,13 @@ async function getLayby(id: string): Promise<LaybyRecord | null> {
   return data ? toRecord(data as unknown as LaybyRow) : null
 }
 
-export const laybyRepo = { findShopByOwner, findProfileByEmail, createLayby, listLaybys, getLayby }
+// changes a lay-by's status (completed, collected or cancelled), with a reason when cancelling
+async function setLaybyStatus(id: string, status: LaybyStatus, cancelReason: string | null = null): Promise<void> {
+  const { error } = await getSupabaseAdmin()
+    .from('laybys')
+    .update({ status, cancel_reason: cancelReason })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export const laybyRepo = { findShopByOwner, findProfileByEmail, createLayby, listLaybys, getLayby, setLaybyStatus }

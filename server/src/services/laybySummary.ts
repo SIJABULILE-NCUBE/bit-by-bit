@@ -1,4 +1,4 @@
-import type { LaybyRecord } from '../repositories/laybyRepo.js'
+import type { LaybyRecord, PaymentRecord } from '../repositories/laybyRepo.js'
 import { balance, isOverdue, nextDue, paidAmount, progressPercent } from './laybyMath.js'
 
 // what the client gets for each lay-by in a list: the basics plus the worked-out numbers
@@ -26,3 +26,18 @@ export function summariseLayby(layby: LaybyRecord, today: string) {
 }
 
 export type LaybySummary = ReturnType<typeof summariseLayby>
+
+// one payment as the client sees it: I never send the storage path or who created it,
+// just whether there's a proof file to look at
+export function paymentJson(p: PaymentRecord) {
+  return {
+    id: p.id,
+    amount: p.amount,
+    method: p.method,
+    status: p.status,
+    createdAt: p.createdAt,
+    reviewedAt: p.reviewedAt,
+    rejectReason: p.rejectReason,
+    hasProof: p.proofPath !== null,
+  }
+}

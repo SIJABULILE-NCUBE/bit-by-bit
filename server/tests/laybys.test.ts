@@ -37,6 +37,7 @@ function payment(amount: number, status: PaymentRecord['status']): PaymentRecord
     createdAt: '2026-11-24T08:00:00Z',
     reviewedAt: null,
     rejectReason: null,
+    proofPath: null,
   }
 }
 
