@@ -221,3 +221,60 @@ describe('GET /api/laybys', () => {
     expect(res.body.find((l: { id: string }) => l.id === 'late').overdue).toBe(true)
   })
 })
+
+describe('GET /api/laybys/:id', () => {
+  beforeEach(() => {
+    seedLayby({
+      id: 'thandi-shop1',
+      shopId: 'shop-1',
+      customerId: 'user-customer',
+      payments: [
+        { ...payment(100, 'confirmed'), id: 'deposit', method: 'deposit', createdAt: '2026-11-24T08:00:00Z' },
+        { ...payment(300, 'pending'), id: 'eft-1', createdAt: '2026-12-20T08:00:00Z' },
+        { ...payment(50, 'rejected'), id: 'eft-2', rejectReason: 'Blurry slip', createdAt: '2026-12-01T08:00:00Z' },
+      ],
+    })
+  })
+
+  it('gives 401 without a token', async () => {
+    const res = await request(app).get('/api/laybys/thandi-shop1')
+    expect(res.status).toBe(401)
+  })
+
+  it('shows the customer their own lay-by with the schedule and payment history', async () => {
+    const res = await request(app).get('/api/laybys/thandi-shop1').set('Authorization', 'Bearer customer-token')
+
+    expect(res.status).toBe(200)
+    expect(res.body).toMatchObject({ id: 'thandi-shop1', paid: 100, balance: 900, shop: { name: 'Kasi Kids Wear' } })
+    expect(res.body.schedule).toEqual([
+      { seq: 1, dueDate: '2026-12-24', amount: 300, paid: 0, status: 'next' },
+      { seq: 2, dueDate: '2027-01-24', amount: 300, paid: 0, status: 'upcoming' },
+      { seq: 3, dueDate: '2027-02-24', amount: 300, paid: 0, status: 'upcoming' },
+    ])
+    // newest first, every status, but never who typed it in
+    expect(res.body.payments.map((p: { id: string }) => p.id)).toEqual(['eft-1', 'eft-2', 'deposit'])
+    expect(res.body.payments[1]).toMatchObject({ amount: 50, status: 'rejected', rejectReason: 'Blurry slip' })
+    expect(res.body.payments[0]).not.toHaveProperty('createdBy')
+  })
+
+  it("gives 404 when a customer asks for someone else's lay-by", async () => {
+    const res = await request(app).get('/api/laybys/thandi-shop1').set('Authorization', 'Bearer customer2-token')
+    expect(res.status).toBe(404)
+  })
+
+  it("lets the shop's owner see it", async () => {
+    const res = await asOwner(request(app).get('/api/laybys/thandi-shop1'))
+    expect(res.status).toBe(200)
+  })
+
+  it("gives 404 to another shop's owner", async () => {
+    const res = await request(app).get('/api/laybys/thandi-shop1').set('Authorization', 'Bearer owner2-token')
+    expect(res.status).toBe(404)
+  })
+
+  it('gives 404 for a lay-by that does not exist', async () => {
+    const res = await asOwner(request(app).get('/api/laybys/nope'))
+    expect(res.status).toBe(404)
+    expect(res.body.error).toMatch(/not found/i)
+  })
+})
