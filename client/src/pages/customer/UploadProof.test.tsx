@@ -71,6 +71,12 @@ describe('Upload proof of payment', () => {
     expect(upload.uploadProof).not.toHaveBeenCalled()
   })
 
+  it('suggests everything that is overdue when payments are late', async () => {
+    vi.mocked(api.getLayby).mockResolvedValue({ ...detail, overdue: true, overdueDue: { amount: 540, since: '2026-10-09' } })
+    renderApp('/customer/laybys/layby-1/pay', asCustomer())
+    expect(await screen.findByLabelText(/amount paid/i)).toHaveValue('540.00')
+  })
+
   it("won't let me pay more than the balance", async () => {
     const user = userEvent.setup()
     vi.mocked(api.getLayby).mockResolvedValue(detail)

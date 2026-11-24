@@ -19,6 +19,7 @@ export function makeLayby(overrides: Partial<LaybySummary> = {}): LaybySummary {
     progress: 40,
     nextDue: { dueDate: '2027-01-24', amount: 300 },
     overdue: false,
+    overdueDue: null,
     ...overrides,
   }
 }

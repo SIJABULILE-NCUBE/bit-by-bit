@@ -30,6 +30,8 @@ export type LaybySummary = {
   progress: number
   nextDue: { dueDate: string; amount: number } | null
   overdue: boolean
+  // everything that's late right now, and the due date of the oldest late instalment
+  overdueDue: { amount: number; since: string } | null
   // owners only: Low / Medium / High and why (null when the lay-by isn't active)
   risk?: Risk | null
 }

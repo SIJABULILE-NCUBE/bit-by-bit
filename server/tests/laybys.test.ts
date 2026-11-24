@@ -219,7 +219,10 @@ describe('GET /api/laybys', () => {
     vi.setSystemTime(new Date('2026-12-26T08:00:00Z'))
     seedLayby({ id: 'late', shopId: 'shop-1', customerId: 'user-customer-2', payments: [payment(100, 'confirmed')] })
     const res = await asOwner(request(app).get('/api/laybys'))
-    expect(res.body.find((l: { id: string }) => l.id === 'late').overdue).toBe(true)
+    const late = res.body.find((l: { id: string }) => l.id === 'late')
+    expect(late.overdue).toBe(true)
+    // how much is late right now, and since when
+    expect(late.overdueDue).toEqual({ amount: 300, since: '2026-12-24' })
   })
 
   it("gives the owner a risk score for each active lay-by, but never shows it to the customer", async () => {

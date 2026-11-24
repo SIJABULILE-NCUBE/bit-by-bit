@@ -1,5 +1,5 @@
 import type { LaybyRecord, PaymentRecord } from '../repositories/laybyRepo.js'
-import { balance, isOverdue, nextDue, paidAmount, progressPercent } from './laybyMath.js'
+import { balance, isOverdue, nextDue, overdueDue, paidAmount, progressPercent } from './laybyMath.js'
 import { riskScore } from './riskScore.js'
 
 // what the client gets for each lay-by in a list: the basics plus the worked-out numbers
@@ -23,6 +23,9 @@ export function summariseLayby(layby: LaybyRecord, today: string) {
     // only active lay-bys have something due
     nextDue: layby.status === 'active' ? nextDue(layby.deposit, layby.instalments, layby.payments) : null,
     overdue: isOverdue(layby, layby.instalments, layby.payments, today),
+    // everything that's late right now (could be more than one instalment)
+    overdueDue:
+      layby.status === 'active' ? overdueDue(layby.deposit, layby.instalments, layby.payments, today) : null,
   }
 }
 

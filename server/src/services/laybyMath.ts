@@ -271,3 +271,20 @@ export function scheduleWithStatus(
       return { ...instalment, paid: fromCents(covered), status }
     })
 }
+
+// ---------- how much is late right now ----------
+
+// every instalment whose due date has passed but isn't covered yet, added up,
+// and the due date of the oldest one ("R 540,00 overdue since 9 Oct")
+// null means nothing is late
+export function overdueDue(
+  deposit: number,
+  instalments: Instalment[],
+  payments: PaymentLike[],
+  today: string,
+): { amount: number; since: string } | null {
+  const late = scheduleWithStatus(deposit, instalments, payments, today, true).filter((i) => i.status === 'overdue')
+  if (late.length === 0) return null
+  const cents = late.reduce((sum, i) => sum + toCents(i.amount) - toCents(i.paid), 0)
+  return { amount: fromCents(cents), since: late[0].dueDate }
+}
