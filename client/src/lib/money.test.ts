@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatMoney, parseMoney, formatDate } from './money'
+import { amountForInput, formatMoney, parseMoney, formatDate } from './money'
 
 describe('formatMoney', () => {
   it('shows Rands the South African way', () => {
@@ -31,5 +31,16 @@ describe('formatDate', () => {
   it('shows dates like 24 Dec 2026', () => {
     expect(formatDate('2026-12-24')).toBe('24 Dec 2026')
     expect(formatDate('2027-01-05')).toBe('5 Jan 2027')
+  })
+})
+
+describe('amountForInput', () => {
+  it('fills a money box the SA way, with a comma and 2 decimals', () => {
+    expect(amountForInput(270)).toBe('270,00')
+    expect(amountForInput(1250.5)).toBe('1250,50')
+  })
+
+  it('gives back something parseMoney reads as the same amount', () => {
+    expect(parseMoney(amountForInput(141.66))).toBe(141.66)
   })
 })

@@ -48,7 +48,10 @@ describe('Owner lay-by detail', () => {
     })
     renderApp('/owner/laybys/layby-1', asOwner())
 
-    await user.type(await screen.findByLabelText(/cash received/i), '300')
+    const cash = await screen.findByLabelText(/cash received/i)
+    // the hint in the empty box is the SA way too
+    expect(cash).toHaveAttribute('placeholder', '300,00')
+    await user.type(cash, '300')
     await user.click(screen.getByRole('button', { name: /record cash payment/i }))
 
     expect(api.addPayment).toHaveBeenCalledWith('test-token', 'layby-1', { amount: 300 })

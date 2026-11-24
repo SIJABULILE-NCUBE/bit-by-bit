@@ -5,7 +5,7 @@ import TextField from '../../components/TextField'
 import { useAuth } from '../../context/AuthContext'
 import { useLayby } from '../../hooks/useLayby'
 import { addPayment } from '../../lib/api'
-import { formatMoney, parseMoney } from '../../lib/money'
+import { amountForInput, formatMoney, parseMoney } from '../../lib/money'
 import { checkPaymentAmount, pendingAmount } from '../../lib/paymentRules'
 import { PROOF_ACCEPT, checkProofFile } from '../../lib/proof'
 import { uploadProof } from '../../lib/uploadProof'
@@ -47,7 +47,7 @@ function UploadProof() {
   const canStillPay = Math.max(0, layby.balance - pendingAmount(layby.payments))
   // I suggest everything that's late, or else the next instalment
   const suggested = Math.min(layby.overdueDue?.amount ?? layby.nextDue?.amount ?? canStillPay, canStillPay)
-  const shownAmount = amountText ?? (suggested > 0 ? suggested.toFixed(2) : '')
+  const shownAmount = amountText ?? (suggested > 0 ? amountForInput(suggested) : '')
 
   function chooseFile(event: ChangeEvent<HTMLInputElement>) {
     const chosen = event.target.files?.[0] ?? null
