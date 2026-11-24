@@ -6,15 +6,16 @@
 
 | | |
 |---|---|
-| 🌐 Live app | _coming soon_ |
-| 🎨 Stitch designs | _https://stitch.google.com/projects/10601282457004177971_ |
+| 🌐 Live app | [bit-by-bit-xpql.vercel.app](https://bit-by-bit-xpql.vercel.app) |
+| ⚙️ API | [bit-by-bit-api.onrender.com/api/health](https://bit-by-bit-api.onrender.com/api/health) (free plan: the first request can take up to a minute while it wakes up) |
+| 🎨 Stitch designs | [View designs](https://stitch.google.com/projects/10601282457004177971) |
 | 🎥 Loom demo | _coming soon_ |
 
 ### Test logins
 | Role | Email | Password |
 |---|---|---|
-| Customer | customer@bit-by-bit.test | _set after deploy_ |
-| Shop owner | owner@bit-by-bit.test | _set after deploy_ |
+| Customer | customer@bit-by-bit.test | _coming soon_ |
+| Shop owner | owner@bit-by-bit.test | _coming soon_ |
 
 ---
 
