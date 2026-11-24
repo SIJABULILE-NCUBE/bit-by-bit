@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  overdueDue,
   buildSchedule,
   validateLaybyTerms,
   paidAmount,
@@ -259,5 +260,27 @@ describe('scheduleWithStatus', () => {
 
   it('says unpaid (not overdue) once a lay-by is no longer active', () => {
     expect(statuses([confirmed(100), confirmed(300)], '2027-06-01', false)).toEqual(['paid', 'unpaid', 'unpaid'])
+  })
+})
+
+describe('overdueDue', () => {
+  // R1 000: R100 deposit, then 3 × R300 due 24 Dec, 24 Jan, 24 Feb
+  const plan = [
+    { seq: 1, dueDate: '2026-12-24', amount: 300 },
+    { seq: 2, dueDate: '2027-01-24', amount: 300 },
+    { seq: 3, dueDate: '2027-02-24', amount: 300 },
+  ]
+  const confirmed = (amount: number) => ({ amount, status: 'confirmed' as const })
+
+  it('is null when nothing is late', () => {
+    expect(overdueDue(100, plan, [confirmed(100)], '2026-12-24')).toBeNull()
+  })
+
+  it('adds up every missed instalment, from the oldest one', () => {
+    expect(overdueDue(100, plan, [confirmed(100)], '2027-01-30')).toEqual({ amount: 600, since: '2026-12-24' })
+  })
+
+  it('takes off what was already paid towards the late ones', () => {
+    expect(overdueDue(100, plan, [confirmed(100), confirmed(350)], '2027-01-30')).toEqual({ amount: 250, since: '2027-01-24' })
   })
 })
