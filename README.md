@@ -27,7 +27,6 @@ They come with 3 demo lay-bys: one on track (with a slip waiting for review), on
 - [Implementation Plan](./IMPLEMENTATION_PLAN.md)
 - [Designs](./docs/designs/) (exported from [Stitch](https://stitch.google.com/projects/10601282457004177971))
 - [DEPLOY.md](./DEPLOY.md): how I deployed it to Render, Vercel and Supabase
-- [Loom script](./docs/LOOM_SCRIPT.md)
 
 ## ✨ Features (Must), all live
 1. **Log in with roles:** customers and shop owners each get their own pages, and the API checks the role on every request
