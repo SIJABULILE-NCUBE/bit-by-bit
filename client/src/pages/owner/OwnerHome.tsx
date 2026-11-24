@@ -93,16 +93,16 @@ function OwnerHome() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <StatCard to="/owner/laybys" count={state.data.totals.active} label="Active lay-bys" tone="text-brand" />
+            <StatCard to="/owner/laybys?show=active" count={state.data.totals.active} label="Active lay-bys" tone="text-brand" />
             <StatCard
               to="/owner/payments"
               count={state.data.totals.paymentsToReview}
               label="Payments to review"
               tone="text-brand-dark"
             />
-            <StatCard to="/owner/laybys" count={state.data.totals.overdue} label="Overdue" tone="text-red-700" />
+            <StatCard to="/owner/laybys?show=overdue" count={state.data.totals.overdue} label="Overdue" tone="text-red-700" />
             <StatCard
-              to="/owner/laybys"
+              to="/owner/laybys?show=ready"
               count={state.data.totals.readyToCollect}
               label="Ready to collect"
               tone="text-brand"

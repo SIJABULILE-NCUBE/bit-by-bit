@@ -30,10 +30,10 @@ describe('Owner dashboard', () => {
 
     expect(await screen.findByText('R 48 650,00')).toBeInTheDocument()
     const stat = (name: RegExp) => screen.getByRole('link', { name })
-    expect(stat(/24 active lay-bys/i)).toHaveAttribute('href', '/owner/laybys')
+    expect(stat(/24 active lay-bys/i)).toHaveAttribute('href', '/owner/laybys?show=active')
     expect(stat(/5 payments to review/i)).toHaveAttribute('href', '/owner/payments')
-    expect(stat(/3 overdue/i)).toBeInTheDocument()
-    expect(stat(/4 ready to collect/i)).toBeInTheDocument()
+    expect(stat(/3 overdue/i)).toHaveAttribute('href', '/owner/laybys?show=overdue')
+    expect(stat(/4 ready to collect/i)).toHaveAttribute('href', '/owner/laybys?show=ready')
     expect(screen.getByText(/kasi kids wear/i)).toBeInTheDocument()
   })
 
