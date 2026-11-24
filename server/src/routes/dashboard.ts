@@ -4,7 +4,7 @@ import { requireRole } from '../middleware/requireRole.js'
 import { laybyRepo } from '../repositories/laybyRepo.js'
 import { dashboardTotals } from '../services/dashboard.js'
 import { todayInSA } from '../services/laybyMath.js'
-import { summariseLayby } from '../services/laybySummary.js'
+import { ownerSummary } from '../services/laybySummary.js'
 
 // GET /api/dashboard: the owner's totals, worked out from the real database every time
 export const dashboardRouter = Router()
@@ -13,7 +13,7 @@ dashboardRouter.get('/', requireAuth, requireRole('owner'), async (req, res) => 
   const shop = await laybyRepo.findShopByOwner(req.user!.id)
   const laybys = shop ? await laybyRepo.listLaybys({ shopId: shop.id }) : []
   const today = todayInSA()
-  const summaries = laybys.map((l) => summariseLayby(l, today))
+  const summaries = laybys.map((l) => ownerSummary(l, today))
 
   res.json({
     shop,

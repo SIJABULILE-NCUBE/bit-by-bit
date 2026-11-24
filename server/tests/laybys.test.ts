@@ -221,6 +221,22 @@ describe('GET /api/laybys', () => {
     const res = await asOwner(request(app).get('/api/laybys'))
     expect(res.body.find((l: { id: string }) => l.id === 'late').overdue).toBe(true)
   })
+
+  it("gives the owner a risk score for each active lay-by, but never shows it to the customer", async () => {
+    // 2 instalments missed by 30 Jan → High
+    vi.setSystemTime(new Date('2027-01-30T08:00:00Z'))
+    seedLayby({ id: 'risky', shopId: 'shop-1', customerId: 'user-customer', payments: [payment(100, 'confirmed')] })
+
+    const owner = await asOwner(request(app).get('/api/laybys'))
+    expect(owner.body.find((l: { id: string }) => l.id === 'risky').risk).toMatchObject({ level: 'high' })
+
+    const customer = await request(app).get('/api/laybys').set('Authorization', 'Bearer customer-token')
+    expect(customer.body.find((l: { id: string }) => l.id === 'risky')).not.toHaveProperty('risk')
+    const detail = await request(app).get('/api/laybys/risky').set('Authorization', 'Bearer customer-token')
+    expect(detail.body).not.toHaveProperty('risk')
+    const ownerDetail = await asOwner(request(app).get('/api/laybys/risky'))
+    expect(ownerDetail.body.risk.level).toBe('high')
+  })
 })
 
 describe('GET /api/laybys/:id', () => {

@@ -74,7 +74,10 @@ describe('GET /api/dashboard', () => {
       readyToCollect: 1,
       paymentsToReview: 1,
       totalOutstanding: 1500,
+      // the overdue one only paid the deposit and missed its first instalment ("first payment default")
+      highRisk: 1,
     })
+    expect(res.body.overdueLaybys[0].risk.level).toBe('high')
     // the lay-bys that need the owner today
     expect(res.body.overdueLaybys.map((l: { itemName: string }) => l.itemName)).toEqual(['Late blazer'])
     expect(res.body.readyLaybys.map((l: { itemName: string }) => l.itemName)).toEqual(['Paid shoes'])

@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { dashboardTotals, checkStatusChange, type DashboardLayby } from '../src/services/dashboard.js'
+import type { PaymentLike } from '../src/services/laybyMath.js'
 
 const today = '2026-12-30'
 
 // a R1 000 lay-by with R100 deposit and 3 × R300 instalments due 24 Dec, 24 Jan, 24 Feb
-function layby(overrides: Partial<DashboardLayby> = {}): DashboardLayby {
+// (every payment gets the same date; the risk tests check dates properly)
+function layby(overrides: Partial<Omit<DashboardLayby, 'payments'>> & { payments?: PaymentLike[] } = {}): DashboardLayby {
+  const { payments = [{ amount: 100, status: 'confirmed' }], ...rest } = overrides
   return {
     price: 1000,
     deposit: 100,
@@ -14,8 +17,9 @@ function layby(overrides: Partial<DashboardLayby> = {}): DashboardLayby {
       { seq: 2, dueDate: '2027-01-24', amount: 300 },
       { seq: 3, dueDate: '2027-02-24', amount: 300 },
     ],
-    payments: [{ amount: 100, status: 'confirmed' }],
-    ...overrides,
+    createdAt: '2026-11-24T09:00:00Z',
+    ...rest,
+    payments: payments.map((p) => ({ ...p, createdAt: '2026-11-24T09:00:00Z' })),
   }
 }
 
@@ -27,6 +31,7 @@ describe('dashboardTotals', () => {
       readyToCollect: 0,
       paymentsToReview: 0,
       totalOutstanding: 0,
+      highRisk: 0,
     })
   })
 
@@ -52,7 +57,15 @@ describe('dashboardTotals', () => {
       readyToCollect: 1,
       paymentsToReview: 1,
       totalOutstanding: 1500,
+      // only the deposit paid and the first instalment missed ("first payment default") → High
+      highRisk: 1,
     })
+  })
+
+  it('counts the active lay-bys at high risk', () => {
+    // by 30 Jan two instalments (24 Dec and 24 Jan) are missed → High
+    const totals = dashboardTotals([layby(), layby(), layby({ status: 'cancelled' })], '2027-01-30')
+    expect(totals.highRisk).toBe(2)
   })
 
   it('adds money up in cents so there are no rounding errors', () => {

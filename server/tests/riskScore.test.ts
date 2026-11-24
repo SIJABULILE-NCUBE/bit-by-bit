@@ -80,17 +80,21 @@ describe('riskLevel', () => {
     expect(riskLevel({ ...ok, missedInstalments: 1, daysOverdue: 3 })).toBe('medium')
   })
 
+  it('is High when only the deposit was paid and the first instalment is missed (first payment default)', () => {
+    expect(riskLevel({ daysOverdue: 3, missedInstalments: 1, percentPaid: 10, daysSinceLastPayment: 33 })).toBe('high')
+  })
+
   it('is High for one missed instalment that is weeks late', () => {
     expect(riskLevel({ ...ok, missedInstalments: 1, daysOverdue: 20 })).toBe('high')
   })
 
   it('is Medium when nothing is missed but there has been no payment for a while', () => {
-    expect(riskLevel({ ...ok, daysSinceLastPayment: 40 })).toBe('medium')
+    expect(riskLevel({ ...ok, daysSinceLastPayment: 50 })).toBe('medium')
   })
 
   it('treats a small amount paid as extra risk only when something is already wrong', () => {
     expect(riskLevel({ ...ok, percentPaid: 10 })).toBe('low')
-    expect(riskLevel({ ...ok, percentPaid: 10, daysSinceLastPayment: 40, missedInstalments: 1, daysOverdue: 2 })).toBe('high')
+    expect(riskLevel({ ...ok, percentPaid: 10, daysSinceLastPayment: 50, missedInstalments: 1, daysOverdue: 2 })).toBe('high')
   })
 })
 

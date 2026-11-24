@@ -7,7 +7,7 @@
 //   3. otherwise I add up points:
 //        1 missed instalment               +2
 //        overdue more than 7 / 30 days     +1 / +2
-//        no payment for 35 / 60 days       +1 / +2
+//        no payment for 45 / 75 days       +1 / +2
 //        under 25% paid (only if something above already went wrong)  +1
 //      0 points = Low, 1-2 = Medium, 3 or more = High
 import { progressPercent, scheduleWithStatus, todayInSA, type Instalment, type LaybyStatus, type PaymentStatus } from './laybyMath.js'
@@ -69,8 +69,8 @@ export function riskLevel(f: RiskFactors): RiskLevel {
   if (f.missedInstalments === 1) points += 2
   if (f.daysOverdue > 30) points += 2
   else if (f.daysOverdue > 7) points += 1
-  if (f.daysSinceLastPayment > 60) points += 2
-  else if (f.daysSinceLastPayment > 35) points += 1
+  if (f.daysSinceLastPayment > 75) points += 2
+  else if (f.daysSinceLastPayment > 45) points += 1
   // paying very little is only worrying when there's already a problem
   if (points > 0 && f.percentPaid < 25) points += 1
 
@@ -94,7 +94,7 @@ export function riskScore(layby: RiskLayby, today: string): { level: RiskLevel; 
     reasons.push(`${f.missedInstalments} instalment${f.missedInstalments === 1 ? '' : 's'} missed`)
   }
   if (f.daysOverdue > 0) reasons.push(`${f.daysOverdue} day${f.daysOverdue === 1 ? '' : 's'} overdue`)
-  if (f.daysSinceLastPayment > 35) reasons.push(`No payment in ${f.daysSinceLastPayment} days`)
+  if (f.daysSinceLastPayment > 45) reasons.push(`No payment in ${f.daysSinceLastPayment} days`)
   if (f.percentPaid < 25) reasons.push(`Only ${f.percentPaid}% paid`)
 
   return { level, reasons }

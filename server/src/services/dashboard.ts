@@ -1,15 +1,10 @@
 // the owner dashboard numbers and the collect / cancel rules, as plain functions
 // (no database), so they're easy to test. See tests/dashboard.test.ts
-import { balance, fromCents, isOverdue, toCents, type Instalment, type LaybyStatus, type PaymentLike } from './laybyMath.js'
+import { balance, fromCents, isOverdue, toCents, type LaybyStatus } from './laybyMath.js'
+import { riskScore, type RiskLayby } from './riskScore.js'
 
-// the bits of a lay-by the dashboard needs
-export type DashboardLayby = {
-  price: number
-  deposit: number
-  status: LaybyStatus
-  instalments: Instalment[]
-  payments: PaymentLike[]
-}
+// the bits of a lay-by the dashboard needs (the same as the risk score needs)
+export type DashboardLayby = RiskLayby
 
 export type DashboardTotals = {
   active: number
@@ -17,6 +12,7 @@ export type DashboardTotals = {
   readyToCollect: number
   paymentsToReview: number
   totalOutstanding: number
+  highRisk: number
 }
 
 export function dashboardTotals(laybys: DashboardLayby[], today: string): DashboardTotals {
@@ -32,6 +28,8 @@ export function dashboardTotals(laybys: DashboardLayby[], today: string): Dashbo
     readyToCollect: laybys.filter((l) => l.status === 'completed').length,
     paymentsToReview: laybys.reduce((sum, l) => sum + l.payments.filter((p) => p.status === 'pending').length, 0),
     totalOutstanding: fromCents(outstandingCents),
+    // "3 lay-bys at high risk": the ones to phone first
+    highRisk: active.filter((l) => riskScore(l, today)?.level === 'high').length,
   }
 }
 
