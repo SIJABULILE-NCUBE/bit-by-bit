@@ -13,6 +13,11 @@ export function parseMoney(input: string): number | null {
   return Number(cleaned)
 }
 
+// what I put in a money box for the user to edit: 270 → "270,00" (no "R", no spaces)
+export function amountForInput(rands: number): string {
+  return rands.toFixed(2).replace('.', ',')
+}
+
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // '2026-12-24' → '24 Dec 2026' (I do it by hand so every browser shows the same thing)

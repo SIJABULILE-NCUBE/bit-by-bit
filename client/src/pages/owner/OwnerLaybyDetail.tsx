@@ -10,7 +10,7 @@ import TextField from '../../components/TextField'
 import { useAuth } from '../../context/AuthContext'
 import { useLayby } from '../../hooks/useLayby'
 import { ApiError, addPayment, updateLaybyStatus } from '../../lib/api'
-import { formatMoney, parseMoney } from '../../lib/money'
+import { amountForInput, formatMoney, parseMoney } from '../../lib/money'
 import { openProof } from '../../lib/openProof'
 import { checkPaymentAmount } from '../../lib/paymentRules'
 import { reminderMessage, whatsappLink } from '../../lib/whatsapp'
@@ -49,7 +49,7 @@ function RecordCash({ layby, onRecorded }: { layby: LaybyDetail; onRecorded: (me
         label="Cash received"
         inputMode="decimal"
         prefix="R"
-        placeholder={(layby.overdueDue?.amount ?? layby.nextDue?.amount ?? 0).toFixed(2)}
+        placeholder={amountForInput(layby.overdueDue?.amount ?? layby.nextDue?.amount ?? 0)}
         hint={`Balance: ${formatMoney(layby.balance)}`}
         value={amountText}
         onChange={(e) => {
