@@ -14,3 +14,6 @@ coverage/
 # Supabase CLI local files (holds my linked project info)
 supabase/.temp/
 supabase/.branches/
+
+# my private Loom script stays out of git
+docs/LOOM_SCRIPT.md
