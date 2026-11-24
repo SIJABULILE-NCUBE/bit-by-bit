@@ -223,7 +223,11 @@ async function listLaybys(filter: LaybyFilter): Promise<LaybyRecord[]> {
   return (data as unknown as LaybyRow[]).map(toRecord)
 }
 
+// lay-by ids are uuids; anything else can't exist (and would make Postgres throw an error)
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 async function getLayby(id: string): Promise<LaybyRecord | null> {
+  if (!uuidPattern.test(id)) return null
   const { data, error } = await getSupabaseAdmin().from('laybys').select(laybySelect).eq('id', id).maybeSingle()
   if (error) throw error
   return data ? toRecord(data as unknown as LaybyRow) : null

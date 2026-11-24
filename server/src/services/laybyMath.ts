@@ -232,3 +232,42 @@ export function nextDue(
   }
   return null
 }
+
+// ---------- schedule with a status per instalment (for the lay-by detail page) ----------
+
+// paid = fully covered, next = the one to pay now, upcoming = later,
+// overdue = its due date has passed and it isn't covered, unpaid = lay-by isn't active any more
+export type InstalmentStatus = 'paid' | 'next' | 'upcoming' | 'overdue' | 'unpaid'
+
+export type InstalmentWithStatus = Instalment & { paid: number; status: InstalmentStatus }
+
+// confirmed payments (after the deposit) fill up the instalments in order, oldest first
+export function scheduleWithStatus(
+  deposit: number,
+  instalments: Instalment[],
+  payments: PaymentLike[],
+  today: string,
+  active: boolean,
+): InstalmentWithStatus[] {
+  let moneyLeft = confirmedCents(payments) - toCents(deposit)
+  let nextFound = false
+
+  return [...instalments]
+    .sort((a, b) => a.seq - b.seq)
+    .map((instalment) => {
+      const amount = toCents(instalment.amount)
+      const covered = Math.max(0, Math.min(amount, moneyLeft))
+      moneyLeft -= covered
+
+      let status: InstalmentStatus
+      if (covered === amount) status = 'paid'
+      else if (!active) status = 'unpaid'
+      else if (instalment.dueDate < today) status = 'overdue'
+      else if (!nextFound) {
+        status = 'next'
+        nextFound = true
+      } else status = 'upcoming'
+
+      return { ...instalment, paid: fromCents(covered), status }
+    })
+}
