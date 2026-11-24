@@ -14,8 +14,10 @@ const asOwner = () => fakeAuth({ session: fakeSession, profile: owner })
 
 const dashboard: Dashboard = {
   shop: { id: 'shop-1', name: 'Kasi Kids Wear', area: 'Soweto' },
-  totals: { active: 24, overdue: 3, readyToCollect: 4, paymentsToReview: 5, totalOutstanding: 48650 },
-  overdueLaybys: [makeLayby({ id: 'late-1', itemName: 'Winter jacket', overdue: true })],
+  totals: { active: 24, overdue: 3, readyToCollect: 4, paymentsToReview: 5, totalOutstanding: 48650, highRisk: 2 },
+  overdueLaybys: [
+    makeLayby({ id: 'late-1', itemName: 'Winter jacket', overdue: true, risk: { level: 'high', reasons: ['2 instalments missed'] } }),
+  ],
   readyLaybys: [makeLayby({ id: 'ready-1', itemName: 'School shoes', status: 'completed', balance: 0 })],
 }
 
@@ -44,6 +46,24 @@ describe('Owner dashboard', () => {
     const attention = await screen.findByRole('region', { name: /needs attention/i })
     expect(within(attention).getByRole('link', { name: /winter jacket/i })).toHaveAttribute('href', '/owner/laybys/late-1')
     expect(within(attention).getByRole('link', { name: /school shoes/i })).toHaveAttribute('href', '/owner/laybys/ready-1')
+  })
+
+  it('shows how many lay-bys are at high risk, with their risk badges', async () => {
+    vi.mocked(api.getDashboard).mockResolvedValue(dashboard)
+    renderApp('/owner', asOwner())
+
+    expect(await screen.findByRole('link', { name: /2 lay-bys at high risk/i })).toHaveAttribute(
+      'href',
+      '/owner/laybys?show=risk',
+    )
+    expect(screen.getByText('High risk')).toBeInTheDocument()
+  })
+
+  it('hides the high-risk banner when there are none', async () => {
+    vi.mocked(api.getDashboard).mockResolvedValue({ ...dashboard, totals: { ...dashboard.totals, highRisk: 0 } })
+    renderApp('/owner', asOwner())
+    await screen.findByText('R 48 650,00')
+    expect(screen.queryByRole('link', { name: /at high risk/i })).not.toBeInTheDocument()
   })
 
   it('says when everything is on track', async () => {

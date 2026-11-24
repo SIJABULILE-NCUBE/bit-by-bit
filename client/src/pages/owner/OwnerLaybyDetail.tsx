@@ -4,6 +4,7 @@ import DashboardShell from '../../components/DashboardShell'
 import LaybyProgress from '../../components/LaybyProgress'
 import PaymentHistory from '../../components/PaymentHistory'
 import PaymentSchedule from '../../components/PaymentSchedule'
+import RiskBadge from '../../components/RiskBadge'
 import StatusBadge from '../../components/StatusBadge'
 import TextField from '../../components/TextField'
 import { useAuth } from '../../context/AuthContext'
@@ -245,8 +246,14 @@ function OwnerLaybyDetail() {
           <section className="rounded-2xl bg-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-2xl font-bold">{layby.itemName}</h2>
-              <StatusBadge layby={layby} />
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <StatusBadge layby={layby} />
+                <RiskBadge risk={layby.risk} />
+              </div>
             </div>
+            {layby.risk && layby.risk.reasons.length > 0 && (
+              <p className="mt-2 text-sm text-gray-700">Why: {layby.risk.reasons.join(', ')}</p>
+            )}
             <div className="mt-4">
               <LaybyProgress layby={layby} />
             </div>

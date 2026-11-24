@@ -6,7 +6,7 @@ import { paymentRepo } from '../repositories/paymentRepo.js'
 import { findLaybyFor } from '../lib/access.js'
 import { balance, buildSchedule, isCompleted, scheduleWithStatus, todayInSA, validateLaybyTerms } from '../services/laybyMath.js'
 import { checkPaymentAmount, isProofPathForLayby, pendingAmount } from '../services/paymentRules.js'
-import { paymentJson, summariseLayby } from '../services/laybySummary.js'
+import { paymentJson, summariseLayby, summaryFor } from '../services/laybySummary.js'
 import { completeIfPaidUp } from './payments.js'
 import { checkStatusChange } from '../services/dashboard.js'
 
@@ -68,7 +68,7 @@ laybysRouter.get('/', async (req, res) => {
   }
 
   const today = todayInSA()
-  res.json(laybys.map((layby) => summariseLayby(layby, today)))
+  res.json(laybys.map((layby) => summaryFor(user.role, layby, today)))
 })
 
 // POST /api/laybys (shop owners only)
@@ -141,7 +141,7 @@ laybysRouter.get('/:id', async (req, res) => {
 
   const today = todayInSA()
   res.json({
-    ...summariseLayby(layby, today),
+    ...summaryFor(req.user!.role, layby, today),
     schedule: scheduleWithStatus(layby.deposit, layby.instalments, layby.payments, today, layby.status === 'active'),
     // newest first
     payments: [...layby.payments].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map(paymentJson),
