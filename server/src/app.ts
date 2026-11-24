@@ -1,6 +1,7 @@
 import express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
 import { healthRouter } from './routes/health.js'
+import { meRouter } from './routes/me.js'
 
 // I build the app in a function so my tests can make a fresh one each time
 // (index.ts is the only place that actually starts listening)
@@ -12,6 +13,7 @@ export function createApp() {
   app.use(express.json())
 
   app.use('/api/health', healthRouter)
+  app.use('/api/me', meRouter)
 
   // anything I haven't made a route for
   app.use((_req, res) => {
