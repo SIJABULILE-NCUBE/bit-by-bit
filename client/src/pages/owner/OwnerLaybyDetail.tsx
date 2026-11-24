@@ -13,6 +13,7 @@ import { ApiError, addPayment, updateLaybyStatus } from '../../lib/api'
 import { formatMoney, parseMoney } from '../../lib/money'
 import { openProof } from '../../lib/openProof'
 import { checkPaymentAmount } from '../../lib/paymentRules'
+import { reminderMessage, whatsappLink } from '../../lib/whatsapp'
 import type { LaybyDetail } from '../../types'
 
 // the owner takes cash at the counter, so it's confirmed straight away
@@ -239,6 +240,17 @@ function OwnerLaybyDetail() {
             {layby.customer.phone && (
               <a href={`tel:${layby.customer.phone}`} className="mt-1 inline-block font-semibold text-brand hover:underline">
                 {layby.customer.phone}
+              </a>
+            )}
+            {/* active = a payment reminder, completed = "come and fetch it" */}
+            {(layby.status === 'active' || layby.status === 'completed') && (
+              <a
+                href={whatsappLink(layby.customer.phone, reminderMessage(layby))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 font-semibold text-brand-dark hover:brightness-95"
+              >
+                <span aria-hidden>💬</span> Remind on WhatsApp
               </a>
             )}
           </section>

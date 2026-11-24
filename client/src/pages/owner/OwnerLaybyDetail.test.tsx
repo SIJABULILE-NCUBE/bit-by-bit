@@ -121,4 +121,24 @@ describe('Owner lay-by detail', () => {
     expect(screen.queryByRole('button', { name: /cancel lay-by/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /mark as collected/i })).not.toBeInTheDocument()
   })
+
+  it('has a one-tap WhatsApp reminder with the message ready', async () => {
+    vi.mocked(api.getLayby).mockResolvedValue(detail())
+    renderApp('/owner/laybys/layby-1', asOwner())
+
+    const link = await screen.findByRole('link', { name: /remind on whatsapp/i })
+    const href = link.getAttribute('href')!
+    expect(href).toMatch(/^https:\/\/wa\.me\/27821234567\?text=/)
+    expect(decodeURIComponent(href.split('text=')[1])).toBe(
+      'Hi Thandi, your lay-by for the School blazer + 2 shirts at Kasi Kids Wear has R 300,00 due on 24 Jan 2027. Balance: R 600,00. Thank you!',
+    )
+    expect(link).toHaveAttribute('target', '_blank')
+  })
+
+  it('has no reminder button once the lay-by is collected', async () => {
+    vi.mocked(api.getLayby).mockResolvedValue(detail({ status: 'collected', balance: 0, nextDue: null }))
+    renderApp('/owner/laybys/layby-1', asOwner())
+    await screen.findByRole('heading', { name: 'School blazer + 2 shirts' })
+    expect(screen.queryByRole('link', { name: /remind on whatsapp/i })).not.toBeInTheDocument()
+  })
 })
