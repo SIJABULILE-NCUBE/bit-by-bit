@@ -1,4 +1,4 @@
-import type { LaybyDetail, LaybySummary, NewLaybyInput, Profile } from '../types'
+import type { LaybyDetail, LaybySummary, NewLaybyInput, PaymentResult, PendingPayment, Profile } from '../types'
 
 // where my Express server lives (set in client/.env)
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
@@ -57,4 +57,38 @@ export function createLayby(token: string, input: NewLaybyInput): Promise<LaybyS
 // one lay-by with its schedule and payment history (only its customer or its shop's owner)
 export function getLayby(token: string, id: string): Promise<LaybyDetail> {
   return apiRequest<LaybyDetail>(`/api/laybys/${encodeURIComponent(id)}`, token)
+}
+
+// customer: { amount, proofPath } after uploading the slip; owner: { amount } for cash
+export function addPayment(
+  token: string,
+  laybyId: string,
+  body: { amount: number; proofPath?: string },
+): Promise<PaymentResult> {
+  return apiRequest<PaymentResult>(`/api/laybys/${encodeURIComponent(laybyId)}/payments`, token, {
+    method: 'POST',
+    body,
+  })
+}
+
+// shop owners only: every slip waiting to be checked
+export function listPendingPayments(token: string): Promise<PendingPayment[]> {
+  return apiRequest<PendingPayment[]>('/api/payments', token)
+}
+
+// a link to the proof file that only works for a few minutes
+export function getProofUrl(token: string, paymentId: string): Promise<{ url: string }> {
+  return apiRequest<{ url: string }>(`/api/payments/${encodeURIComponent(paymentId)}/proof`, token)
+}
+
+// shop owners only: confirm a slip, or reject it with a reason
+export function reviewPayment(
+  token: string,
+  paymentId: string,
+  review: { action: 'confirm' } | { action: 'reject'; reason: string },
+): Promise<PaymentResult> {
+  return apiRequest<PaymentResult>(`/api/payments/${encodeURIComponent(paymentId)}`, token, {
+    method: 'PATCH',
+    body: review,
+  })
 }

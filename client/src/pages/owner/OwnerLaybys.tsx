@@ -43,10 +43,15 @@ function OwnerLaybys() {
         {state.status === 'ready' && state.laybys.length > 0 && (
           <ul className="grid gap-4 md:grid-cols-2">
             {state.laybys.map((layby) => (
-              <li key={layby.id} className="rounded-2xl bg-white p-5 shadow-sm">
+              <li key={layby.id} className="relative rounded-2xl bg-white p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h2 className="truncate text-lg font-bold">{layby.itemName}</h2>
+                    <h2 className="truncate text-lg font-bold">
+                      {/* the whole card is clickable through this link */}
+                      <Link to={`/owner/laybys/${layby.id}`} className="after:absolute after:inset-0 hover:underline">
+                        {layby.itemName}
+                      </Link>
+                    </h2>
                     <p className="truncate text-sm text-gray-600">{layby.customer.fullName ?? layby.customer.email}</p>
                   </div>
                   <StatusBadge layby={layby} />

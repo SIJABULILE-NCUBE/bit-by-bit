@@ -2,8 +2,12 @@ import { Router } from 'express'
 import { requireAuth } from '../middleware/requireAuth.js'
 import { requireRole } from '../middleware/requireRole.js'
 import { laybyRepo } from '../repositories/laybyRepo.js'
-import { buildSchedule, isCompleted, scheduleWithStatus, todayInSA, validateLaybyTerms } from '../services/laybyMath.js'
-import { summariseLayby } from '../services/laybySummary.js'
+import { paymentRepo } from '../repositories/paymentRepo.js'
+import { findLaybyFor } from '../lib/access.js'
+import { balance, buildSchedule, isCompleted, scheduleWithStatus, todayInSA, validateLaybyTerms } from '../services/laybyMath.js'
+import { checkPaymentAmount, isProofPathForLayby, pendingAmount } from '../services/paymentRules.js'
+import { paymentJson, summariseLayby } from '../services/laybySummary.js'
+import { completeIfPaidUp } from './payments.js'
 
 export const laybysRouter = Router()
 
@@ -128,18 +132,8 @@ laybysRouter.post('/', requireRole('owner'), async (req, res) => {
 // one lay-by with its schedule and payment history, for its customer or its shop's owner only
 // anyone else gets a 404, so they can't even tell whether the lay-by exists
 laybysRouter.get('/:id', async (req, res) => {
-  const user = req.user!
-  const layby = await laybyRepo.getLayby(req.params.id)
-
-  let allowed = false
-  if (layby && user.role === 'customer') {
-    allowed = layby.customerId === user.id
-  } else if (layby && user.role === 'owner') {
-    const shop = await laybyRepo.findShopByOwner(user.id)
-    allowed = shop !== null && layby.shopId === shop.id
-  }
-
-  if (!layby || !allowed) {
+  const layby = await findLaybyFor(req.user!, req.params.id)
+  if (!layby) {
     res.status(404).json({ error: 'Lay-by not found' })
     return
   }
@@ -148,17 +142,58 @@ laybysRouter.get('/:id', async (req, res) => {
   res.json({
     ...summariseLayby(layby, today),
     schedule: scheduleWithStatus(layby.deposit, layby.instalments, layby.payments, today, layby.status === 'active'),
-    // newest first; I leave out who created each payment
-    payments: [...layby.payments]
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-      .map((p) => ({
-        id: p.id,
-        amount: p.amount,
-        method: p.method,
-        status: p.status,
-        createdAt: p.createdAt,
-        reviewedAt: p.reviewedAt,
-        rejectReason: p.rejectReason,
-      })),
+    // newest first
+    payments: [...layby.payments].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map(paymentJson),
   })
+})
+
+// POST /api/laybys/:id/payments
+// customer: { amount, proofPath } after uploading the slip to storage → a PENDING EFT payment
+// owner:    { amount } for cash at the counter → CONFIRMED straight away
+laybysRouter.post('/:id/payments', async (req, res) => {
+  const user = req.user!
+  const layby = await findLaybyFor(user, req.params.id)
+  if (!layby) {
+    res.status(404).json({ error: 'Lay-by not found' })
+    return
+  }
+  if (layby.status !== 'active') {
+    res.status(400).json({ error: `This lay-by is ${layby.status}, so it can't take more payments` })
+    return
+  }
+
+  const body = (req.body ?? {}) as { amount?: unknown; proofPath?: unknown }
+  const amount = body.amount as number
+  const owed = balance(layby.price, layby.payments)
+  const isCustomer = user.role === 'customer'
+
+  // a customer's slips that are still waiting count as "already promised",
+  // so two slips can't add up to more than what's owed
+  const problem = checkPaymentAmount(amount, isCustomer ? owed - pendingAmount(layby.payments) : owed)
+  if (problem) {
+    res.status(400).json({ error: problem })
+    return
+  }
+
+  let proofPath: string | null = null
+  if (isCustomer) {
+    proofPath = typeof body.proofPath === 'string' ? body.proofPath : ''
+    if (!isProofPathForLayby(proofPath, layby.id) || !(await paymentRepo.proofExists(proofPath))) {
+      res.status(400).json({ error: 'Please upload your proof of payment (a photo or PDF) first' })
+      return
+    }
+  }
+
+  const id = await paymentRepo.addPayment({
+    laybyId: layby.id,
+    amount,
+    method: isCustomer ? 'eft' : 'cash',
+    status: isCustomer ? 'pending' : 'confirmed',
+    proofPath,
+    createdBy: user.id,
+  })
+
+  const fresh = await completeIfPaidUp(layby.id)
+  const payment = fresh.payments.find((p) => p.id === id)!
+  res.status(201).json({ payment: paymentJson(payment), layby: summariseLayby(fresh, todayInSA()) })
 })

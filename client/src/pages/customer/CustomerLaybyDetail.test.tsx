@@ -20,10 +20,10 @@ const detail: LaybyDetail = {
     { seq: 3, dueDate: '2027-02-24', amount: 300, paid: 0, status: 'upcoming' },
   ],
   payments: [
-    { id: 'p3', amount: 300, method: 'eft', status: 'pending', createdAt: '2027-01-20T09:30:00Z', reviewedAt: null, rejectReason: null },
-    { id: 'p2', amount: 50, method: 'eft', status: 'rejected', createdAt: '2026-12-10T09:30:00Z', reviewedAt: null, rejectReason: 'Blurry slip' },
-    { id: 'p1', amount: 300, method: 'cash', status: 'confirmed', createdAt: '2026-12-20T09:30:00Z', reviewedAt: null, rejectReason: null },
-    { id: 'p0', amount: 100, method: 'deposit', status: 'confirmed', createdAt: '2026-11-24T08:00:00Z', reviewedAt: null, rejectReason: null },
+    { id: 'p3', amount: 300, method: 'eft', status: 'pending', createdAt: '2027-01-20T09:30:00Z', reviewedAt: null, rejectReason: null, hasProof: false },
+    { id: 'p2', amount: 50, method: 'eft', status: 'rejected', createdAt: '2026-12-10T09:30:00Z', reviewedAt: null, rejectReason: 'Blurry slip', hasProof: true },
+    { id: 'p1', amount: 300, method: 'cash', status: 'confirmed', createdAt: '2026-12-20T09:30:00Z', reviewedAt: null, rejectReason: null, hasProof: false },
+    { id: 'p0', amount: 100, method: 'deposit', status: 'confirmed', createdAt: '2026-11-24T08:00:00Z', reviewedAt: null, rejectReason: null, hasProof: false },
   ],
 }
 
