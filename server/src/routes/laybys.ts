@@ -8,6 +8,7 @@ import { balance, buildSchedule, isCompleted, scheduleWithStatus, todayInSA, val
 import { checkPaymentAmount, isProofPathForLayby, pendingAmount } from '../services/paymentRules.js'
 import { paymentJson, summariseLayby } from '../services/laybySummary.js'
 import { completeIfPaidUp } from './payments.js'
+import { checkStatusChange } from '../services/dashboard.js'
 
 export const laybysRouter = Router()
 
@@ -196,4 +197,37 @@ laybysRouter.post('/:id/payments', async (req, res) => {
   const fresh = await completeIfPaidUp(layby.id)
   const payment = fresh.payments.find((p) => p.id === id)!
   res.status(201).json({ payment: paymentJson(payment), layby: summariseLayby(fresh, todayInSA()) })
+})
+
+// PATCH /api/laybys/:id  { action: 'collect' }  or  { action: 'cancel', reason: '...' }
+// shop owners only: hand over a paid-up item, or cancel a lay-by
+laybysRouter.patch('/:id', requireRole('owner'), async (req, res) => {
+  const body = (req.body ?? {}) as { action?: unknown; reason?: unknown }
+  if (body.action !== 'collect' && body.action !== 'cancel') {
+    res.status(400).json({ error: 'Choose collect or cancel' })
+    return
+  }
+  const reason = typeof body.reason === 'string' ? body.reason.trim() : ''
+  if (reason.length > 300) {
+    res.status(400).json({ error: 'Keep the reason under 300 characters' })
+    return
+  }
+
+  const layby = await findLaybyFor(req.user!, String(req.params.id))
+  if (!layby) {
+    res.status(404).json({ error: 'Lay-by not found' })
+    return
+  }
+
+  const problem = checkStatusChange(layby.status, body.action, reason)
+  if (problem) {
+    res.status(400).json({ error: problem })
+    return
+  }
+
+  if (body.action === 'collect') await laybyRepo.setLaybyStatus(layby.id, 'collected')
+  else await laybyRepo.setLaybyStatus(layby.id, 'cancelled', reason)
+
+  const fresh = await laybyRepo.getLayby(layby.id)
+  res.json(summariseLayby(fresh!, todayInSA()))
 })
