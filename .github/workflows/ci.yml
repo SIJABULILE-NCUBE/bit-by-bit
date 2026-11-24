@@ -41,4 +41,36 @@ jobs:
       - name: Build
         run: npm run build
 
-  # I'll add a "server" job here once the Express API is set up (issue #5)
+  server:
+    name: Server (lint, typecheck, test, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # my tests mock Supabase, so CI doesn't need any real keys
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
