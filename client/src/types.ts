@@ -40,3 +40,29 @@ export type NewLaybyInput = {
   deposit: number
   termMonths: number
 }
+
+// one row of the schedule on the detail page (the server works out the status)
+export type ScheduledInstalment = {
+  seq: number
+  dueDate: string
+  amount: number
+  paid: number
+  status: 'paid' | 'next' | 'upcoming' | 'overdue' | 'unpaid'
+}
+
+// one payment in the history list
+export type PaymentItem = {
+  id: string
+  amount: number
+  method: 'deposit' | 'cash' | 'eft'
+  status: 'pending' | 'confirmed' | 'rejected'
+  createdAt: string
+  reviewedAt: string | null
+  rejectReason: string | null
+}
+
+// what GET /api/laybys/:id sends back: the summary plus the schedule and payments
+export type LaybyDetail = LaybySummary & {
+  schedule: ScheduledInstalment[]
+  payments: PaymentItem[]
+}
