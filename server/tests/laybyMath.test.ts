@@ -8,6 +8,7 @@ import {
   isCompleted,
   isOverdue,
   nextDue,
+  todayInSA,
   type Instalment,
   type PaymentLike,
 } from '../src/services/laybyMath.js'
@@ -215,5 +216,13 @@ describe('isOverdue and nextDue', () => {
 
   it('has no next due date when everything is paid', () => {
     expect(nextDue(deposit, schedule, [confirmed(1000)])).toBeNull()
+  })
+})
+
+describe('todayInSA', () => {
+  it('uses South African time, which is 2 hours ahead of UTC', () => {
+    // 23:30 UTC on the 23rd is already 01:30 on the 24th in Johannesburg
+    expect(todayInSA(new Date('2026-11-23T23:30:00Z'))).toBe('2026-11-24')
+    expect(todayInSA(new Date('2026-11-23T12:00:00Z'))).toBe('2026-11-23')
   })
 })
