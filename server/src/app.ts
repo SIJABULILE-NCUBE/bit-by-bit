@@ -2,6 +2,7 @@ import express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
 import { healthRouter } from './routes/health.js'
 import { meRouter } from './routes/me.js'
+import { laybysRouter } from './routes/laybys.js'
 
 // I build the app in a function so my tests can make a fresh one each time
 // (index.ts is the only place that actually starts listening)
@@ -14,6 +15,7 @@ export function createApp() {
 
   app.use('/api/health', healthRouter)
   app.use('/api/me', meRouter)
+  app.use('/api/laybys', laybysRouter)
 
   // anything I haven't made a route for
   app.use((_req, res) => {

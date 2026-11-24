@@ -4,6 +4,8 @@ import SignUp from './pages/auth/SignUp'
 import LogIn from './pages/auth/LogIn'
 import CustomerHome from './pages/customer/CustomerHome'
 import OwnerHome from './pages/owner/OwnerHome'
+import OwnerLaybys from './pages/owner/OwnerLaybys'
+import NewLayby from './pages/owner/NewLayby'
 import ProtectedRoute from './components/ProtectedRoute'
 
 // all my routes live here
@@ -23,6 +25,8 @@ function App() {
       {/* shop owners only */}
       <Route element={<ProtectedRoute role="owner" />}>
         <Route path="/owner" element={<OwnerHome />} />
+        <Route path="/owner/laybys" element={<OwnerLaybys />} />
+        <Route path="/owner/laybys/new" element={<NewLayby />} />
       </Route>
 
       {/* unknown address? back to the landing page */}
