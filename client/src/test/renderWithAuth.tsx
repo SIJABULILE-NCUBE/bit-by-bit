@@ -2,7 +2,8 @@ import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import type { Session } from '@supabase/supabase-js'
-import { AuthContext, type AuthValue, type Profile } from '../context/AuthContext'
+import { AuthContext, type AuthValue } from '../context/AuthContext'
+import type { Profile } from '../types'
 import App from '../App'
 
 // pretend users for my tests
