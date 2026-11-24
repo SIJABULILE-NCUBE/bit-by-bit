@@ -1,4 +1,4 @@
-import type { LaybySummary, NewLaybyInput, Profile } from '../types'
+import type { LaybyDetail, LaybySummary, NewLaybyInput, Profile } from '../types'
 
 // where my Express server lives (set in client/.env)
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
@@ -52,4 +52,9 @@ export function listLaybys(token: string): Promise<LaybySummary[]> {
 // shop owners only
 export function createLayby(token: string, input: NewLaybyInput): Promise<LaybySummary> {
   return apiRequest<LaybySummary>('/api/laybys', token, { method: 'POST', body: input })
+}
+
+// one lay-by with its schedule and payment history (only its customer or its shop's owner)
+export function getLayby(token: string, id: string): Promise<LaybyDetail> {
+  return apiRequest<LaybyDetail>(`/api/laybys/${encodeURIComponent(id)}`, token)
 }

@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { requireAuth } from '../middleware/requireAuth.js'
 import { requireRole } from '../middleware/requireRole.js'
 import { laybyRepo } from '../repositories/laybyRepo.js'
-import { buildSchedule, isCompleted, todayInSA, validateLaybyTerms } from '../services/laybyMath.js'
+import { buildSchedule, isCompleted, scheduleWithStatus, todayInSA, validateLaybyTerms } from '../services/laybyMath.js'
 import { summariseLayby } from '../services/laybySummary.js'
 
 export const laybysRouter = Router()
@@ -122,4 +122,43 @@ laybysRouter.post('/', requireRole('owner'), async (req, res) => {
 
   const created = await laybyRepo.getLayby(id)
   res.status(201).json(summariseLayby(created!, today))
+})
+
+// GET /api/laybys/:id
+// one lay-by with its schedule and payment history, for its customer or its shop's owner only
+// anyone else gets a 404, so they can't even tell whether the lay-by exists
+laybysRouter.get('/:id', async (req, res) => {
+  const user = req.user!
+  const layby = await laybyRepo.getLayby(req.params.id)
+
+  let allowed = false
+  if (layby && user.role === 'customer') {
+    allowed = layby.customerId === user.id
+  } else if (layby && user.role === 'owner') {
+    const shop = await laybyRepo.findShopByOwner(user.id)
+    allowed = shop !== null && layby.shopId === shop.id
+  }
+
+  if (!layby || !allowed) {
+    res.status(404).json({ error: 'Lay-by not found' })
+    return
+  }
+
+  const today = todayInSA()
+  res.json({
+    ...summariseLayby(layby, today),
+    schedule: scheduleWithStatus(layby.deposit, layby.instalments, layby.payments, today, layby.status === 'active'),
+    // newest first; I leave out who created each payment
+    payments: [...layby.payments]
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map((p) => ({
+        id: p.id,
+        amount: p.amount,
+        method: p.method,
+        status: p.status,
+        createdAt: p.createdAt,
+        reviewedAt: p.reviewedAt,
+        rejectReason: p.rejectReason,
+      })),
+  })
 })

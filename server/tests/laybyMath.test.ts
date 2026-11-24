@@ -9,6 +9,7 @@ import {
   isOverdue,
   nextDue,
   todayInSA,
+  scheduleWithStatus,
   type Instalment,
   type PaymentLike,
 } from '../src/services/laybyMath.js'
@@ -224,5 +225,39 @@ describe('todayInSA', () => {
     // 23:30 UTC on the 23rd is already 01:30 on the 24th in Johannesburg
     expect(todayInSA(new Date('2026-11-23T23:30:00Z'))).toBe('2026-11-24')
     expect(todayInSA(new Date('2026-11-23T12:00:00Z'))).toBe('2026-11-23')
+  })
+})
+
+describe('scheduleWithStatus', () => {
+  // R1000 item, R100 deposit, 3 x R300 on 24 Dec, 24 Jan, 24 Feb
+  const deposit = 100
+  const schedule = buildSchedule(1000, deposit, 3, '2026-11-24')
+  const statuses = (payments: PaymentLike[], today: string, active = true) =>
+    scheduleWithStatus(deposit, schedule, payments, today, active).map((i) => i.status)
+
+  it('marks the first unpaid instalment as next and the rest as upcoming', () => {
+    expect(statuses([confirmed(100)], '2026-11-30')).toEqual(['next', 'upcoming', 'upcoming'])
+  })
+
+  it('marks covered instalments as paid', () => {
+    expect(statuses([confirmed(100), confirmed(300)], '2026-12-30')).toEqual(['paid', 'next', 'upcoming'])
+  })
+
+  it('marks unpaid instalments past their due date as overdue', () => {
+    expect(statuses([confirmed(100)], '2027-01-25')).toEqual(['overdue', 'overdue', 'next'])
+  })
+
+  it('shows how much of each instalment is covered', () => {
+    const result = scheduleWithStatus(deposit, schedule, [confirmed(100), confirmed(450)], '2026-12-01', true)
+    expect(result.map((i) => i.paid)).toEqual([300, 150, 0])
+    expect(result.map((i) => i.status)).toEqual(['paid', 'next', 'upcoming'])
+  })
+
+  it('ignores pending payments', () => {
+    expect(statuses([confirmed(100), pending(300)], '2026-12-01')).toEqual(['next', 'upcoming', 'upcoming'])
+  })
+
+  it('says unpaid (not overdue) once a lay-by is no longer active', () => {
+    expect(statuses([confirmed(100), confirmed(300)], '2027-06-01', false)).toEqual(['paid', 'unpaid', 'unpaid'])
   })
 })

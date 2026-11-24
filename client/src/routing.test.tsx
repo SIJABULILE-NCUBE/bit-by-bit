@@ -1,7 +1,18 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import * as api from './lib/api'
 import { renderApp, fakeAuth, fakeSession, customer, owner } from './test/renderWithAuth'
+
+// the customer home now loads lay-bys, so I fake that call (no real network in tests)
+vi.mock(import('./lib/api'), async (importOriginal) => ({
+  ...(await importOriginal()),
+  listLaybys: vi.fn(),
+}))
+
+beforeEach(() => {
+  vi.mocked(api.listLaybys).mockResolvedValue([])
+})
 
 // logged-in helpers
 const asCustomer = () => fakeAuth({ session: fakeSession, profile: customer })
