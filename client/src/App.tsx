@@ -4,6 +4,7 @@ import SignUp from './pages/auth/SignUp'
 import LogIn from './pages/auth/LogIn'
 import CustomerHome from './pages/customer/CustomerHome'
 import CustomerLaybyDetail from './pages/customer/CustomerLaybyDetail'
+import UploadProof from './pages/customer/UploadProof'
 import OwnerHome from './pages/owner/OwnerHome'
 import OwnerLaybys from './pages/owner/OwnerLaybys'
 import NewLayby from './pages/owner/NewLayby'
@@ -22,6 +23,7 @@ function App() {
       <Route element={<ProtectedRoute role="customer" />}>
         <Route path="/customer" element={<CustomerHome />} />
         <Route path="/customer/laybys/:id" element={<CustomerLaybyDetail />} />
+        <Route path="/customer/laybys/:id/pay" element={<UploadProof />} />
       </Route>
 
       {/* shop owners only */}

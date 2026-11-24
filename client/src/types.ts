@@ -59,10 +59,21 @@ export type PaymentItem = {
   createdAt: string
   reviewedAt: string | null
   rejectReason: string | null
+  // true when the customer uploaded a slip I can look at
+  hasProof: boolean
 }
 
 // what GET /api/laybys/:id sends back: the summary plus the schedule and payments
 export type LaybyDetail = LaybySummary & {
   schedule: ScheduledInstalment[]
   payments: PaymentItem[]
+}
+
+// what the server sends back after a payment is added, confirmed or rejected
+export type PaymentResult = { payment: PaymentItem; layby: LaybySummary }
+
+// one slip in the owner's "Payments to review" list
+export type PendingPayment = PaymentItem & {
+  layby: { id: string; itemName: string; price: number; balance: number; status: LaybyStatus }
+  customer: { id: string; fullName: string | null; email: string; phone: string | null }
 }

@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import DashboardShell from '../../components/DashboardShell'
 import LaybyProgress from '../../components/LaybyProgress'
 import StatusBadge from '../../components/StatusBadge'
@@ -31,6 +31,8 @@ const paymentStatusStyles: Record<PaymentItem['status'], { label: string; classN
 function CustomerLaybyDetail() {
   const { id } = useParams()
   const state = useLayby(id)
+  // the upload page sends me back here after a slip is sent
+  const sent = (useLocation().state as { sent?: boolean } | null)?.sent
 
   const backLink = (
     <Link to="/customer" className="text-sm font-semibold text-brand hover:underline">
@@ -66,6 +68,12 @@ function CustomerLaybyDetail() {
     <DashboardShell title="Lay-by details" showGreeting={false}>
       {backLink}
 
+      {sent && (
+        <p role="status" className="mt-4 rounded-xl bg-brand-light p-4 font-medium text-brand">
+          ✓ Your proof of payment was sent to {layby.shop.name}. It counts once they confirm it.
+        </p>
+      )}
+
       <div className="mt-4 grid gap-6 lg:grid-cols-2">
         <div className="space-y-6">
           {/* the item and how far along I am */}
@@ -88,6 +96,14 @@ function CustomerLaybyDetail() {
               <p className="mt-4 inline-block rounded-full bg-gold-light px-4 py-2 text-sm font-semibold text-brand-dark">
                 {formatMoney(layby.balance)} left to own it!
               </p>
+            )}
+            {layby.balance > 0 && layby.status === 'active' && (
+              <Link
+                to={`/customer/laybys/${layby.id}/pay`}
+                className="mt-4 block rounded-xl bg-brand px-6 py-3 text-center font-semibold text-white hover:bg-brand-dark"
+              >
+                Upload proof of payment
+              </Link>
             )}
             {layby.status === 'completed' && (
               <p className="mt-4 rounded-xl bg-gold-light p-4 font-semibold text-brand-dark">
