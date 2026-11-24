@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import DashboardShell from '../../components/DashboardShell'
 import LaybyProgress from '../../components/LaybyProgress'
+import RiskBadge from '../../components/RiskBadge'
 import StatusBadge from '../../components/StatusBadge'
 import { useLaybys } from '../../hooks/useLaybys'
 import { filterLaybys, isFilterKey, laybyFilters } from '../../lib/laybyFilters'
@@ -97,7 +98,10 @@ function OwnerLaybys() {
                     </h2>
                     <p className="truncate text-sm text-gray-600">{layby.customer.fullName ?? layby.customer.email}</p>
                   </div>
-                  <StatusBadge layby={layby} />
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <StatusBadge layby={layby} />
+                    <RiskBadge risk={layby.risk} />
+                  </div>
                 </div>
                 <div className="mt-4">
                   <LaybyProgress layby={layby} />

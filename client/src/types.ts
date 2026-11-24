@@ -30,7 +30,11 @@ export type LaybySummary = {
   progress: number
   nextDue: { dueDate: string; amount: number } | null
   overdue: boolean
+  // owners only: Low / Medium / High and why (null when the lay-by isn't active)
+  risk?: Risk | null
 }
+
+export type Risk = { level: 'low' | 'medium' | 'high'; reasons: string[] }
 
 // what the New lay-by form sends to POST /api/laybys
 export type NewLaybyInput = {
@@ -87,6 +91,7 @@ export type Dashboard = {
     readyToCollect: number
     paymentsToReview: number
     totalOutstanding: number
+    highRisk: number
   }
   overdueLaybys: LaybySummary[]
   readyLaybys: LaybySummary[]

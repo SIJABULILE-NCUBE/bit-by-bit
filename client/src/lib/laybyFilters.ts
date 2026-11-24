@@ -5,6 +5,7 @@ export const laybyFilters = [
   { key: 'all', label: 'All' },
   { key: 'active', label: 'Active' },
   { key: 'overdue', label: 'Overdue' },
+  { key: 'risk', label: 'High risk' },
   { key: 'ready', label: 'Ready to collect' },
   { key: 'collected', label: 'Collected' },
   { key: 'cancelled', label: 'Cancelled' },
@@ -19,6 +20,7 @@ export function isFilterKey(value: string | null): value is LaybyFilterKey {
 function matchesFilter(layby: LaybySummary, filter: LaybyFilterKey): boolean {
   if (filter === 'all') return true
   if (filter === 'overdue') return layby.overdue
+  if (filter === 'risk') return layby.risk?.level === 'high'
   // "ready to collect" = fully paid (my status for that is 'completed')
   if (filter === 'ready') return layby.status === 'completed'
   return layby.status === filter

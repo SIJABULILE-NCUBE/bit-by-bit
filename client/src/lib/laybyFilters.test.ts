@@ -3,7 +3,7 @@ import { filterLaybys } from './laybyFilters'
 import { makeLayby } from '../test/fixtures'
 
 const thandi = makeLayby({ id: 'a' })
-const late = makeLayby({ id: 'b', overdue: true, customer: { ...thandi.customer, fullName: 'Vusi Cele', email: 'vusi@example.com' } })
+const late = makeLayby({ id: 'b', overdue: true, risk: { level: 'high', reasons: [] }, customer: { ...thandi.customer, fullName: 'Vusi Cele', email: 'vusi@example.com' } })
 const paid = makeLayby({ id: 'c', status: 'completed' })
 const gone = makeLayby({ id: 'd', status: 'collected' })
 const stopped = makeLayby({ id: 'e', status: 'cancelled' })
@@ -22,6 +22,7 @@ describe('filterLaybys', () => {
     expect(ids(filterLaybys(all, 'ready', ''))).toEqual(['c'])
     expect(ids(filterLaybys(all, 'collected', ''))).toEqual(['d'])
     expect(ids(filterLaybys(all, 'cancelled', ''))).toEqual(['e'])
+    expect(ids(filterLaybys(all, 'risk', ''))).toEqual(['b'])
   })
 
   it('searches customer names and emails, ignoring capitals and extra spaces', () => {

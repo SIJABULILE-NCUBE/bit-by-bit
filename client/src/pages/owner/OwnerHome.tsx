@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DashboardShell from '../../components/DashboardShell'
+import RiskBadge from '../../components/RiskBadge'
 import StatusBadge from '../../components/StatusBadge'
 import { useAuth } from '../../context/AuthContext'
 import { getDashboard } from '../../lib/api'
@@ -31,7 +32,10 @@ function AttentionRow({ layby, note }: { layby: LaybySummary; note: string }) {
           {layby.customer.fullName ?? layby.customer.email} · {note}
         </span>
       </span>
-      <StatusBadge layby={layby} />
+      <span className="flex shrink-0 flex-col items-end gap-1">
+        <StatusBadge layby={layby} />
+        <RiskBadge risk={layby.risk} />
+      </span>
     </li>
   )
 }
@@ -108,6 +112,22 @@ function OwnerHome() {
               tone="text-brand"
             />
           </div>
+
+          {/* my credit-risk early warning: who to phone first */}
+          {state.data.totals.highRisk > 0 && (
+            <Link
+              to="/owner/laybys?show=risk"
+              className="flex items-center gap-3 rounded-2xl bg-red-50 p-4 font-semibold text-red-800 hover:bg-red-100"
+            >
+              <span aria-hidden className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white">
+                !
+              </span>
+              <span>
+                {state.data.totals.highRisk} lay-by{state.data.totals.highRisk === 1 ? '' : 's'} at high risk
+                <span className="block text-sm font-normal">Reach out before they fall further behind</span>
+              </span>
+            </Link>
+          )}
 
           <section aria-label="Needs attention" className="rounded-2xl bg-white p-5 shadow-sm">
             <h2 className="text-lg font-bold">Needs attention today</h2>
