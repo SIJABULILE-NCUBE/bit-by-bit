@@ -8,6 +8,8 @@ import UploadProof from './pages/customer/UploadProof'
 import OwnerHome from './pages/owner/OwnerHome'
 import OwnerLaybys from './pages/owner/OwnerLaybys'
 import NewLayby from './pages/owner/NewLayby'
+import OwnerLaybyDetail from './pages/owner/OwnerLaybyDetail'
+import PaymentsToReview from './pages/owner/PaymentsToReview'
 import ProtectedRoute from './components/ProtectedRoute'
 
 // all my routes live here
@@ -31,6 +33,8 @@ function App() {
         <Route path="/owner" element={<OwnerHome />} />
         <Route path="/owner/laybys" element={<OwnerLaybys />} />
         <Route path="/owner/laybys/new" element={<NewLayby />} />
+        <Route path="/owner/laybys/:id" element={<OwnerLaybyDetail />} />
+        <Route path="/owner/payments" element={<PaymentsToReview />} />
       </Route>
 
       {/* unknown address? back to the landing page */}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { ApiError, getLayby } from '../lib/api'
 import type { LaybyDetail } from '../types'
@@ -10,10 +10,13 @@ type LaybyState =
   | { status: 'ready'; layby: LaybyDetail }
 
 // loads one lay-by for the detail page
-export function useLayby(id: string | undefined): LaybyState {
+// reload() fetches it again (e.g. after the owner records a payment)
+export function useLayby(id: string | undefined): LaybyState & { reload: () => void } {
   const { session } = useAuth()
   const token = session?.access_token
   const [state, setState] = useState<LaybyState>({ status: 'loading' })
+  const [version, setVersion] = useState(0)
+  const reload = useCallback(() => setVersion((v) => v + 1), [])
 
   useEffect(() => {
     if (!token || !id) return
@@ -33,7 +36,7 @@ export function useLayby(id: string | undefined): LaybyState {
     return () => {
       cancelled = true
     }
-  }, [token, id])
+  }, [token, id, version])
 
-  return state
+  return { ...state, reload }
 }

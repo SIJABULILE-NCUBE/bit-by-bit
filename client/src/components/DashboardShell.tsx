@@ -8,6 +8,7 @@ const navLinks = {
   owner: [
     { to: '/owner', label: 'Dashboard' },
     { to: '/owner/laybys', label: 'Lay-bys' },
+    { to: '/owner/payments', label: 'Payments' },
   ],
   customer: [{ to: '/customer', label: 'My lay-bys' }],
 }
@@ -39,7 +40,7 @@ function DashboardShell({ title, children, showGreeting = true }: DashboardShell
       </header>
 
       {profile && navLinks[profile.role].length > 1 && (
-        <nav aria-label="Main" className="mx-auto flex max-w-5xl gap-2 px-5 pb-4">
+        <nav aria-label="Main" className="mx-auto flex max-w-5xl flex-wrap gap-2 px-5 pb-4">
           {navLinks[profile.role].map((link) => (
             <NavLink
               key={link.to}
