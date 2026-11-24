@@ -49,7 +49,7 @@ function RecordCash({ layby, onRecorded }: { layby: LaybyDetail; onRecorded: (me
         label="Cash received"
         inputMode="decimal"
         prefix="R"
-        placeholder={layby.nextDue ? layby.nextDue.amount.toFixed(2) : '0,00'}
+        placeholder={(layby.overdueDue?.amount ?? layby.nextDue?.amount ?? 0).toFixed(2)}
         hint={`Balance: ${formatMoney(layby.balance)}`}
         value={amountText}
         onChange={(e) => {

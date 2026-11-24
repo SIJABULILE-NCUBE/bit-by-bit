@@ -32,10 +32,17 @@ function LaybyProgress({ layby }: { layby: LaybySummary }) {
         </span>
       </div>
 
-      {layby.nextDue && (
-        <p className="mt-1 text-sm text-gray-600">
-          Next: {formatMoney(layby.nextDue.amount)} due {formatDate(layby.nextDue.dueDate)}
+      {/* when payments are late I show everything that's late, otherwise just the next one */}
+      {layby.overdueDue ? (
+        <p className="mt-1 text-sm font-semibold text-red-700">
+          {formatMoney(layby.overdueDue.amount)} overdue since {formatDate(layby.overdueDue.since)}
         </p>
+      ) : (
+        layby.nextDue && (
+          <p className="mt-1 text-sm text-gray-600">
+            Next: {formatMoney(layby.nextDue.amount)} due {formatDate(layby.nextDue.dueDate)}
+          </p>
+        )
       )}
     </div>
   )

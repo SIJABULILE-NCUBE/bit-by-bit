@@ -15,9 +15,15 @@ describe('reminderMessage', () => {
   })
 
   it('says "was due" and asks them to pay soon when it is overdue', () => {
-    const layby = makeLayby({ overdue: true, balance: 1250.5, nextDue: { dueDate: '2026-10-24', amount: 300 } })
+    // two instalments are late, so the message asks for both
+    const layby = makeLayby({
+      overdue: true,
+      balance: 1250.5,
+      nextDue: { dueDate: '2026-10-24', amount: 300 },
+      overdueDue: { amount: 600, since: '2026-10-24' },
+    })
     expect(reminderMessage(layby)).toBe(
-      'Hi Thandi, your lay-by for the School blazer + 2 shirts at Kasi Kids Wear had R 300,00 due on 24 Oct 2026. Balance: R 1 250,50. Please pay as soon as you can. Thank you!',
+      'Hi Thandi, your lay-by for the School blazer + 2 shirts at Kasi Kids Wear has R 600,00 overdue since 24 Oct 2026. Balance: R 1 250,50. Please pay as soon as you can. Thank you!',
     )
   })
 

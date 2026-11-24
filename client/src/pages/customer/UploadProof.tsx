@@ -45,7 +45,8 @@ function UploadProof() {
   const { layby } = state
   // slips that are still waiting count too, so I can't send more than I owe
   const canStillPay = Math.max(0, layby.balance - pendingAmount(layby.payments))
-  const suggested = Math.min(layby.nextDue?.amount ?? canStillPay, canStillPay)
+  // I suggest everything that's late, or else the next instalment
+  const suggested = Math.min(layby.overdueDue?.amount ?? layby.nextDue?.amount ?? canStillPay, canStillPay)
   const shownAmount = amountText ?? (suggested > 0 ? suggested.toFixed(2) : '')
 
   function chooseFile(event: ChangeEvent<HTMLInputElement>) {

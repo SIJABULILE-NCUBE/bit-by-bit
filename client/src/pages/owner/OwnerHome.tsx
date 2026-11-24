@@ -136,7 +136,7 @@ function OwnerHome() {
             ) : (
               <ul className="mt-3 space-y-2">
                 {state.data.overdueLaybys.map((layby) => (
-                  <AttentionRow key={layby.id} layby={layby} note={`owes ${formatMoney(layby.nextDue?.amount ?? 0)}`} />
+                  <AttentionRow key={layby.id} layby={layby} note={`${formatMoney(layby.overdueDue?.amount ?? 0)} overdue`} />
                 ))}
                 {state.data.readyLaybys.map((layby) => (
                   <AttentionRow key={layby.id} layby={layby} note="paid up, ready to collect" />

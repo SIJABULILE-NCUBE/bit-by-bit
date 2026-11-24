@@ -3,7 +3,10 @@
 import { formatDate, formatMoney } from './money'
 import type { LaybySummary } from '../types'
 
-type ReminderLayby = Pick<LaybySummary, 'itemName' | 'status' | 'balance' | 'nextDue' | 'overdue' | 'shop' | 'customer'>
+type ReminderLayby = Pick<
+  LaybySummary,
+  'itemName' | 'status' | 'balance' | 'nextDue' | 'overdue' | 'overdueDue' | 'shop' | 'customer'
+>
 
 // "Hi Thandi, your lay-by for the School blazer at Kasi Kids Wear has R 350,00 due on 30 Nov 2026. Balance: R 700,00. Thank you!"
 export function reminderMessage(layby: ReminderLayby): string {
@@ -14,12 +17,14 @@ export function reminderMessage(layby: ReminderLayby): string {
     return `Hi ${firstName}, good news! Your lay-by for the ${layby.itemName} at ${layby.shop.name} is fully paid and ready to collect. Thank you!`
   }
 
-  const due = `${formatMoney(layby.nextDue.amount)} due on ${formatDate(layby.nextDue.dueDate)}`
   const balance = `Balance: ${formatMoney(layby.balance)}.`
 
-  if (layby.overdue) {
-    return `Hi ${firstName}, ${what} had ${due}. ${balance} Please pay as soon as you can. Thank you!`
+  // late? then I ask for everything that's late, not just the first missed instalment
+  if (layby.overdueDue) {
+    const late = `${formatMoney(layby.overdueDue.amount)} overdue since ${formatDate(layby.overdueDue.since)}`
+    return `Hi ${firstName}, ${what} has ${late}. ${balance} Please pay as soon as you can. Thank you!`
   }
+  const due = `${formatMoney(layby.nextDue.amount)} due on ${formatDate(layby.nextDue.dueDate)}`
   return `Hi ${firstName}, ${what} has ${due}. ${balance} Thank you!`
 }
 
