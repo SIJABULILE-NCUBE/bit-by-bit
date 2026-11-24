@@ -1,0 +1,10 @@
+{
+  // for the real build I only compile src/ (no tests) into dist/
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
