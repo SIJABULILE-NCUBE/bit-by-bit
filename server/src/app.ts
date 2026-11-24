@@ -1,5 +1,6 @@
 import express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
+import { corsOptions } from './lib/cors.js'
 import { healthRouter } from './routes/health.js'
 import { meRouter } from './routes/me.js'
 
@@ -8,8 +9,8 @@ import { meRouter } from './routes/me.js'
 export function createApp() {
   const app = express()
 
-  // only my React app is allowed to call this API from the browser
-  app.use(cors({ origin: process.env.CLIENT_URL ?? 'http://localhost:5173' }))
+  // only my React app (CLIENT_URL) is allowed to call this API from the browser
+  app.use(cors(corsOptions()))
   app.use(express.json())
 
   app.use('/api/health', healthRouter)
