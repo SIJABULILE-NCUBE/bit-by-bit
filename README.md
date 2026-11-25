@@ -9,7 +9,10 @@
 | 🌐 Live app | [bit-by-bit-xpql.vercel.app](https://bit-by-bit-xpql.vercel.app) |
 | ⚙️ API | [bit-by-bit-api.onrender.com/api/health](https://bit-by-bit-api.onrender.com/api/health) (free plan: the first request can take up to a minute while it wakes up) |
 | 🎨 Stitch designs | [View designs](https://stitch.google.com/projects/10601282457004177971) |
-| 🎥 Loom demo (5 min) | _Loom link goes here_ |
+
+**Demo videos (Loom)**
+- [Part 1: Pitch and demo](https://www.loom.com/share/4d8cb2d0a224459c94116a401b6623f0)
+- [Part 2: Demo continued](https://www.loom.com/share/57d46a717af24f6aac323089520fdf88)
 
 ### Test logins
 | Role | Email | Password |
